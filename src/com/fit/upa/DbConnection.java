@@ -1,5 +1,9 @@
 package com.fit.upa;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import oracle.spatial.geometry.JGeometry;
 
 public class DbConnection {
     private static DbConnection dbConn = null;
@@ -40,6 +44,42 @@ public class DbConnection {
             System.out.println("Already disconnected");
         }
     }
+
+    public ArrayList<ObjectsInDB> query(String query){
+        ArrayList<ObjectsInDB> arrayList = new ArrayList<ObjectsInDB>();
+        if(!connected){
+            System.out.println("Already disconnected");
+        }
+        else {
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    String name = rs.getString(1);
+                    System.out.println(name);
+                    byte[] result = rs.getBytes(2);
+                    JGeometry jGeometry;
+                    jGeometry = JGeometry.load(result);
+                    //System.out.println(jGeometry.toStringFull());
+                    double[] ordinates = jGeometry.getOrdinatesArray();
+                    int[] eleminfo = jGeometry.getElemInfo();
+                    System.out.println(Arrays.toString(eleminfo));
+                    System.out.println(Arrays.toString(ordinates));
+                    if (eleminfo[2] == 3) {
+                        arrayList.add(new ObjectsInDB(3,name, ordinates));
+                    } else if (eleminfo[2] == 1) {
+                        arrayList.add(new ObjectsInDB(1,name, ordinates));
+                    }
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return arrayList;
+    }
+
     public Connection getConn(){
         return conn;
     }

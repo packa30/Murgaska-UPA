@@ -3,8 +3,10 @@ package com.fit.upa;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+
 public class Main extends Application {
 
     public static void main(String[] args) {
@@ -19,15 +21,23 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         DbConnection dbConn = DbConnection.getInstance();
-            System.out.println(dbConn.isConnected());
+        System.out.println(dbConn.isConnected());
+
+        ArrayList<ObjectsInDB> arrayList = dbConn.query("SELECT c.name, c.geometry FROM city c");
+        System.out.println(arrayList);
+        for(ObjectsInDB elem : arrayList) {
+            System.out.println(">>" + elem.info());
+        }
         //creating a Group object
         Group group = new Group();
+
+        Shapes shapes = new Shapes(arrayList, group);
 
         //Creating a Scene by passing the group object, height and width
         Scene scene = new Scene(group ,600, 300);
 
         //setting color to the scene
-        scene.setFill(Color.BROWN);
+        //scene.setFill(Color.BROWN);
 
         //Setting the title to Stage.
         primaryStage.setTitle("Sample Application");
