@@ -2,7 +2,9 @@ package com.fit.upa;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -23,7 +25,8 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception{
+        /*
         DbConnection dbConn = DbConnection.getInstance();
         System.out.println(dbConn.isConnected());
 
@@ -42,9 +45,10 @@ public class Main extends Application {
 
 
         Shapes shapes = new Shapes(arrayList, group);
-
+        */
         //Creating a Scene by passing the group object, height and width
-        Scene scene = new Scene(group ,600, 300);
+        Parent root = FXMLLoader.load(getClass().getResource("elemSelect.fxml"));
+        Scene scene = new Scene(root ,1024, 768);
 
         //setting color to the scene
         scene.setFill(Paint.valueOf("f5f5f5"));
