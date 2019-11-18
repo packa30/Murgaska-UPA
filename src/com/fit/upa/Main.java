@@ -26,26 +26,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        /*
-        DbConnection dbConn = DbConnection.getInstance();
-        System.out.println(dbConn.isConnected());
-
-        ArrayList<ObjectsInDB> arrayList = dbConn.query("SELECT c.name, c.geometry FROM city c");
-        System.out.println(arrayList);
-        for(ObjectsInDB elem : arrayList) {
-            System.out.println(">>" + elem.info());
-        }
-        //creating a Group object
-        Group group = new Group();
-
-        Scale scale = new Scale(); //origin to bottom left corner
-        scale.setY(-1);
-        scale.pivotYProperty().bind(Bindings.createDoubleBinding(() -> group.getBoundsInLocal().getMaxY()+group.getBoundsInLocal().getHeight()/2,group.boundsInLocalProperty()));
-        group.getTransforms().add(scale);
-
-
-        Shapes shapes = new Shapes(arrayList, group);
-        */
         //Creating a Scene by passing the group object, height and width
         Parent root = FXMLLoader.load(getClass().getResource("elemSelect.fxml"));
         Scene scene = new Scene(root ,1024, 768);

@@ -22,13 +22,13 @@ public class Shapes{
 
     Group root;
     ArrayList<Shape> shapes = new ArrayList<Shape>();
-    public Shapes(ArrayList<ObjectsInDB> arrayList, Group g, AnchorPane anch2){
+    public Shapes(ArrayList<ObjectsInDB> arrayList, Group g){
         root = g;
         for(ObjectsInDB elem : arrayList) {
             if(elem.type == 3){
                 Group rG = new Group();
                 g.getChildren().add(rG);
-                shapes.add(new Rec(elem.ordinates,elem.name, rG, anch2));
+                shapes.add(new Rec(elem.ordinates,elem.name, rG));
                 Rec r = (Rec)shapes.get(shapes.size() - 1);
                 System.out.println(r.name);
                 rG.getChildren().add(r);
@@ -82,7 +82,7 @@ public class Shapes{
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     try {
-                        ElemSelect.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("objInfo.fxml")));
+                        MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("objInfo.fxml")));
                         ObjInfo.getInstance().setName(name);
                         for(int i = 0; i < ordinates.length/2; i++) {
                             ObjInfo.getInstance().getGPane().addRow(i, new Label("point"+i), new TextField(String.valueOf(ordinates[2*i])), new TextField(String.valueOf(ordinates[2*i+1])));
@@ -102,7 +102,7 @@ public class Shapes{
         String name;
         double[] ordinates;
         Group rec = new Group();
-        public Rec(double[] ordinates, String name, Group g, AnchorPane a){
+        public Rec(double[] ordinates, String name, Group g){
             this.name = name;
             this.ordinates = ordinates;
             Circle[] recCorners= {new Circle(ordinates[0], ordinates[1], 0),
@@ -121,16 +121,16 @@ public class Shapes{
 
             setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
             setStroke(Color.GRAY);
-            enableDrag(g, a);
+            enableDrag(g);
         }
 
-        private void enableDrag(Group g, AnchorPane a) {
+        private void enableDrag(Group g) {
 
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     try {
-                        ElemSelect.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("objInfo.fxml")));
+                        MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("objInfo.fxml")));
                         ObjInfo.getInstance().setName(name);
                         //for(int i = 0; i < 2; i++) {
                             ObjInfo.getInstance().getGPane().addRow(0, new Label("point0"), new TextField(String.valueOf(ordinates[0])), new TextField(String.valueOf(ordinates[1])));
