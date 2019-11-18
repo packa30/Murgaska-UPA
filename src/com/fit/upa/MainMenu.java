@@ -2,10 +2,11 @@ package com.fit.upa;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 
 public class MainMenu {
     @FXML
-    public AnchorPane anch2;
+    public AnchorPane pane;
 
     public static MainMenu instance;
     public MainMenu(){
@@ -15,6 +16,6 @@ public class MainMenu {
         return instance;
     }
     public AnchorPane getAnchor(){
-        return anch2;
+        return pane;
     }
 }

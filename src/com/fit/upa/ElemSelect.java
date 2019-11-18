@@ -14,6 +14,17 @@ public class ElemSelect {
     @FXML
     private Group group;
 
+    @FXML
+    public AnchorPane Apane;
+
+    public static ElemSelect instance;
+    public ElemSelect(){
+        instance = this;
+    }
+    public static ElemSelect getInstance(){
+        return instance;
+    }
+
     public void initialize(){
         DbConnection dbConn = DbConnection.getInstance();
         System.out.println(dbConn.isConnected());

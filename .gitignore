@@ -2,3 +2,5 @@
 *.iml
 /.idea
 /out
+/lib/sdotype.jar
+/lib/sdoutl.jar
