@@ -1,5 +1,6 @@
 package com.fit.upa;
 
+import com.fit.upa.shapes.Poly;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -43,7 +44,7 @@ public class Shapes{
             }
         }
     }
-
+/*
     class Poly extends Polyline{
         String name;
         Double[] ordinates;
@@ -96,7 +97,7 @@ public class Shapes{
             });
         }
     }
-
+*/
     class Rec extends Rectangle {
 
         String name;
@@ -121,20 +122,22 @@ public class Shapes{
 
             setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
             setStroke(Color.GRAY);
-            enableDrag(g);
+            enableDrag(g,this);
         }
 
-        private void enableDrag(Group g) {
+        private void enableDrag(Group g, Rec self) {
 
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     try {
                         MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("objInfo.fxml")));
+                        ObjInfo.getInstance().setOwner(self);
                         ObjInfo.getInstance().setName(name);
+
                         //for(int i = 0; i < 2; i++) {
-                            ObjInfo.getInstance().getGPane().addRow(0, new Label("point0"), new TextField(String.valueOf(ordinates[0])), new TextField(String.valueOf(ordinates[1])));
-                            ObjInfo.getInstance().getGPane().addRow(1, new Label("point1"), new TextField(String.valueOf(ordinates[2])), new TextField(String.valueOf(ordinates[3])));
+                        ObjInfo.getInstance().getGPane().addRow(0, new Label("point0"), new TextField(String.valueOf(ordinates[0])), new TextField(String.valueOf(ordinates[1])));
+                        ObjInfo.getInstance().getGPane().addRow(1, new Label("point1"), new TextField(String.valueOf(ordinates[2])), new TextField(String.valueOf(ordinates[3])));
                         //}
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -152,5 +155,7 @@ public class Shapes{
 
 
     }
+
+
 
 }

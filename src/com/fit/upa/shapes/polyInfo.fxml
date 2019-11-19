@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.ObjInfo">
+<AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.shapes.PolyInfo">
 
     <children>
         <Button layoutX="71.0" layoutY="486.0" mnemonicParsing="false" text="back" onAction="#onClick"/>
@@ -39,7 +39,7 @@
                 </AnchorPane>
             </content>
         </ScrollPane>
-        <CheckBox contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" text="Enable editing" />
+        <CheckBox fx:id="ch1" onAction="#check" contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" text="Enable editing" />
     </children>
 
 </AnchorPane>

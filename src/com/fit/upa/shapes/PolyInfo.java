@@ -1,8 +1,10 @@
-package com.fit.upa;
+package com.fit.upa.shapes;
 
+import com.fit.upa.shapes.Poly;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -11,8 +13,8 @@ import javafx.event.ActionEvent;
 
 import java.io.IOException;
 
-public class ObjInfo {
-    private Shapes.Rec owner;
+public class PolyInfo {
+    public Poly owner;
     @FXML
     public Text name;
 
@@ -22,16 +24,16 @@ public class ObjInfo {
     @FXML
     public AnchorPane pane;
 
-    public static ObjInfo instance;
-    public ObjInfo(){
+    public static PolyInfo instance;
+    public PolyInfo(){
         instance = this;
     }
-    public static ObjInfo getInstance(){
+    public static PolyInfo getInstance(){
         return instance;
     }
 
-    public void setOwner(Shapes.Rec rec){
-        owner = rec;
+    public void setOwner(Poly p){
+        owner = p;
     }
 
     public void initialize(){
@@ -52,5 +54,24 @@ public class ObjInfo {
         //ElemSelect.getInstance().Apane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
         //pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
+    }
+
+    @FXML
+    public CheckBox ch1;
+
+    @FXML
+    public void check(ActionEvent event) throws IOException {
+        if(ch1.isSelected()){
+            System.out.println("mozes menit");
+            owner.setEnableEdit(true);
+        }
+        if(!ch1.isSelected()){
+            System.out.println("nemozes menit");
+            owner.setEnableEdit(false);
+        }
+    }
+
+    public void setSelect(){
+        ch1.setSelected(true);
     }
 }

@@ -13,6 +13,6 @@
                 <Group fx:id="group" />
             </children>
         </AnchorPane>
-            <fx:include fx:id="menu" source="mainMenu.fxml"/>
+        <fx:include fx:id="menu" source="mainMenu.fxml"/>
     </items>
 </SplitPane>
