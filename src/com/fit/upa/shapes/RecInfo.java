@@ -1,6 +1,6 @@
 package com.fit.upa.shapes;
 
-import com.fit.upa.shapes.Rec;
+//import com.fit.upa.shapes.Rec;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,7 +14,7 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 
 public class RecInfo {
-    public Rec owner;
+    public Shapes.Rec owner;
     @FXML
     public Text name;
 
@@ -32,7 +32,7 @@ public class RecInfo {
         return instance;
     }
 
-    public void setOwner(Rec r){
+    public void setOwner(Shapes.Rec r){
         owner = r;
     }
 

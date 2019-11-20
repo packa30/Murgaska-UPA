@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ObjectsInDB {
-    int type;
-    String name;
-    double[] ordinates;
+    public int type;
+    public String name;
+    public double[] ordinates;
 
     public ObjectsInDB(int type, String name, double[] ordinates){
         this.type = type;

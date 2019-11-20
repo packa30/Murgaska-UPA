@@ -1,13 +1,10 @@
 package com.fit.upa;
 
-import javafx.event.ActionEvent;
+import com.fit.upa.shapes.Shapes;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ElemSelect {

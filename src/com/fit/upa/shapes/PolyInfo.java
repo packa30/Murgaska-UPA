@@ -1,6 +1,6 @@
 package com.fit.upa.shapes;
 
-import com.fit.upa.shapes.Poly;
+//import com.fit.upa.shapes.Poly;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,7 +14,7 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 
 public class PolyInfo {
-    public Poly owner;
+    public Shapes.Poly owner;
     @FXML
     public Text name;
 
@@ -32,7 +32,7 @@ public class PolyInfo {
         return instance;
     }
 
-    public void setOwner(Poly p){
+    public void setOwner(Shapes.Poly p){
         owner = p;
     }
 
