@@ -1,5 +1,5 @@
 package com.fit.upa;
-
+import com.fit.upa.shapes.Rec;
 import com.fit.upa.shapes.Poly;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -98,6 +98,7 @@ public class Shapes{
         }
     }
 */
+/*
     class Rec extends Rectangle {
 
         String name;
@@ -155,6 +156,7 @@ public class Shapes{
 
 
     }
+    */
 
 
 

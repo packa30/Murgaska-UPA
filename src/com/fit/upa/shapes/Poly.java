@@ -1,8 +1,6 @@
 package com.fit.upa.shapes;
 
 import com.fit.upa.MainMenu;
-import com.fit.upa.ObjInfo;
-//import com.fit.upa.PolyInfo;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -13,9 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import java.io.IOException;
 import java.util.Arrays;
