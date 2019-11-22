@@ -51,6 +51,8 @@ public class PolyInfo {
     @FXML
     public void onClick(ActionEvent event) throws IOException {
         System.out.println("you clicked me");
+        ch1.setSelected(false);
+        owner.setEnableEdit(false);
         //ElemSelect.getInstance().Apane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../mainMenu.fxml")));
         //pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));

@@ -45,8 +45,10 @@ public class Shapes{
     public class Poly extends Polyline {
         public boolean enableEdit = false;
         public Circle[] cs;
-        public String name;
         public Double[] ordinates;
+        public Double[] ordinatesOrigin;
+        public TextField[] tfOrdinates;
+        public String name;
         public Group poly = new Group();
         public Group root;
         public Poly(double[] ordinates, String name, Group g){
@@ -55,6 +57,7 @@ public class Shapes{
             this.root = g;
             int pointsCount = ordinates.length/2-1;
             this.ordinates = new Double[pointsCount*2];
+            this.tfOrdinates = new TextField[pointsCount*2];
             Circle[] polyCorners = new Circle[pointsCount];
             for(int i=0; i<pointsCount; i++){
                 this.ordinates[2*i] = ordinates[2*i];
@@ -93,6 +96,8 @@ public class Shapes{
         }
 
         private void enableDrag(Group g, com.fit.upa.shapes.Shapes.Poly owner) {
+            final Delta dragDelta = new Delta();
+
             g.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -107,16 +112,49 @@ public class Shapes{
                         MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("polyInfo.fxml")));
                         PolyInfo.getInstance().setOwner(owner);
                         PolyInfo.getInstance().setName(name);
+                        System.out.println("<<<<<>>>>>>");
                         if(owner.enableEdit){
                             PolyInfo.getInstance().setSelect();
                         }
                         for(int i = 0; i < ordinates.length/2; i++) {
-                            PolyInfo.getInstance().getGPane().addRow(i, new Label("point"+i), new TextField(String.valueOf(ordinates[2*i])), new TextField(String.valueOf(ordinates[2*i+1])));
+                            tfOrdinates[2*i] = new TextField(String.valueOf(ordinates[2*i]));
+                            tfOrdinates[2*i+1] = new TextField(String.valueOf(ordinates[2*i+1]));
+                            PolyInfo.getInstance().getGPane().addRow(i, new Label("point "+i), tfOrdinates[i*2], tfOrdinates[i*2+1]);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     ;
+                    }
+                    else {
+                        if(mouseEvent.getTarget() instanceof Circle){
+                            dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
+                            dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
+
+                            ordinatesOrigin = ordinates;
+                        }
+                    }
+                }
+            });
+
+            g.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(mouseEvent.getTarget() instanceof Circle){
+                        double newX = mouseEvent.getX() + dragDelta.x;
+                        double newY = mouseEvent.getY() + dragDelta.y;
+                        ((Circle) mouseEvent.getTarget()).setCenterX(newX);
+                        ((Circle) mouseEvent.getTarget()).setCenterY(newY);
+
+                        for(int i=0; i<cs.length; i++){
+                            if(mouseEvent.getTarget().equals(cs[i])){
+                                ordinates[i*2] = newX;
+                                tfOrdinates[i*2].setText(String.valueOf(newX));
+                                ordinates[i*2+1] = newY;
+                                tfOrdinates[i*2+1].setText(String.valueOf(newY));
+                                Poly.super.getPoints().setAll(ordinates);
+                            }
+                        }
                     }
                 }
             });
@@ -202,8 +240,7 @@ public class Shapes{
                 }
             });
         }
-
-
-
     }
+
+    private class Delta{double x,y;}
 }
