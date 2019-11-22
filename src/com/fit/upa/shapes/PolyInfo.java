@@ -53,6 +53,7 @@ public class PolyInfo {
         System.out.println("you clicked me");
         ch1.setSelected(false);
         owner.setEnableEdit(false);
+        owner.discardChanges();
         //ElemSelect.getInstance().Apane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../mainMenu.fxml")));
         //pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
@@ -63,6 +64,7 @@ public class PolyInfo {
         System.out.println("Apply;");
         if(ch1.isSelected()){
             owner.updateCoordFromTextField();
+            owner.applyChanges();
         }
 
     }
@@ -79,6 +81,7 @@ public class PolyInfo {
         if(!ch1.isSelected()){
             System.out.println("nemozes menit");
             owner.setEnableEdit(false);
+            owner.discardChanges();
         }
     }
 

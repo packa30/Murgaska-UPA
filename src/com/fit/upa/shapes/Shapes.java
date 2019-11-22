@@ -46,7 +46,7 @@ public class Shapes{
         public boolean enableEdit = false;
         public Circle[] cs;
         public Double[] ordinates;
-        public Double[] ordinatesOrigin;
+        public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
         public TextField[] tfOrdinates;
         public String name;
         public Group poly = new Group();
@@ -79,15 +79,31 @@ public class Shapes{
             enableDrag(root, this);
         }
 
-        public void updateCoordFromTextField(){
-            for(int i=0; i<ordinates.length; i++){
-                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText());
-            }
+        public void updateCoords(){
             for(int i=0; i<cs.length; i++){
                 cs[i].setCenterX(ordinates[2*i]);
                 cs[i].setCenterY(ordinates[2*i+1]);
             }
             Poly.super.getPoints().setAll(ordinates);
+        }
+
+        public void updateCoordFromTextField(){
+            for(int i=0; i<ordinates.length; i++){
+                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText());
+            }
+            updateCoords();
+        }
+
+        public void discardChanges(){
+            if(!ordinatesHistory.isEmpty()) {
+                ordinates = ordinatesHistory.get(0);
+                ordinatesHistory.clear();
+                updateCoords();
+            }
+        }
+
+        public void applyChanges(){
+            ordinatesHistory.clear();
         }
 
         public void setEnableEdit(boolean state){
@@ -142,8 +158,12 @@ public class Shapes{
                         if(mouseEvent.getTarget() instanceof Circle){
                             dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
                             dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
-
-                            ordinatesOrigin = ordinates;
+                            ordinatesHistory.add(ordinates.clone());
+                        }
+                        else if(mouseEvent.getTarget() instanceof Poly){
+                            dragDelta.x = mouseEvent.getX();
+                            dragDelta.y = mouseEvent.getY();
+                            ordinatesHistory.add(ordinates.clone());
                         }
                     }
                 }
@@ -152,20 +172,37 @@ public class Shapes{
             g.setOnMouseDragged(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(mouseEvent.getTarget() instanceof Circle){
-                        double newX = mouseEvent.getX() + dragDelta.x;
-                        double newY = mouseEvent.getY() + dragDelta.y;
-                        ((Circle) mouseEvent.getTarget()).setCenterX(newX);
-                        ((Circle) mouseEvent.getTarget()).setCenterY(newY);
+                    if(shapeSelected) {
+                        if (mouseEvent.getTarget() instanceof Circle) {
+                            double newX = mouseEvent.getX() + dragDelta.x;
+                            double newY = mouseEvent.getY() + dragDelta.y;
+                            ((Circle) mouseEvent.getTarget()).setCenterX(newX);
+                            ((Circle) mouseEvent.getTarget()).setCenterY(newY);
 
-                        for(int i=0; i<cs.length; i++){
-                            if(mouseEvent.getTarget().equals(cs[i])){
-                                ordinates[i*2] = newX;
-                                tfOrdinates[i*2].setText(String.valueOf(newX));
-                                ordinates[i*2+1] = newY;
-                                tfOrdinates[i*2+1].setText(String.valueOf(newY));
-                                Poly.super.getPoints().setAll(ordinates);
+                            for (int i = 0; i < cs.length; i++) {
+                                if (mouseEvent.getTarget().equals(cs[i])) {
+                                    ordinates[i * 2] = newX;
+                                    tfOrdinates[i * 2].setText(String.valueOf(newX));
+                                    ordinates[i * 2 + 1] = newY;
+                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(newY));
+                                    Poly.super.getPoints().setAll(ordinates);
+                                }
                             }
+                        } else if (mouseEvent.getTarget() instanceof Poly) {
+                            double deltaX = mouseEvent.getX() - dragDelta.x;
+                            double deltaY = mouseEvent.getY() - dragDelta.y;
+
+                            for (int i = 0; i < cs.length; i++) {
+                                double newX = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2] +deltaX;
+                                double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2+1] + deltaY;
+                                cs[i].setCenterX(newX); //TODO nacitat len raz
+                                ordinates[i * 2] = newX;
+                                tfOrdinates[i * 2].setText(String.valueOf(newX));
+                                cs[i].setCenterY(newY);
+                                ordinates[i * 2 + 1] = newY;
+                                tfOrdinates[i * 2 + 1].setText(String.valueOf(newY));
+                            }
+                            Poly.super.getPoints().setAll(ordinates);
                         }
                     }
                 }
