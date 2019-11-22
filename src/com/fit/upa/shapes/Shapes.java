@@ -51,6 +51,7 @@ public class Shapes{
         public String name;
         public Group poly = new Group();
         public Group root;
+
         public Poly(double[] ordinates, String name, Group g){
             this.name = name;
             //this.ordinates = ordinates;
@@ -76,6 +77,17 @@ public class Shapes{
             setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
             setStroke(Color.GRAY);
             enableDrag(root, this);
+        }
+
+        public void updateCoordFromTextField(){
+            for(int i=0; i<ordinates.length; i++){
+                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText());
+            }
+            for(int i=0; i<cs.length; i++){
+                cs[i].setCenterX(ordinates[2*i]);
+                cs[i].setCenterY(ordinates[2*i+1]);
+            }
+            Poly.super.getPoints().setAll(ordinates);
         }
 
         public void setEnableEdit(boolean state){

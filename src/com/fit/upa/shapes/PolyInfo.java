@@ -59,6 +59,15 @@ public class PolyInfo {
     }
 
     @FXML
+    public void onApply(ActionEvent event) {
+        System.out.println("Apply;");
+        if(ch1.isSelected()){
+            owner.updateCoordFromTextField();
+        }
+
+    }
+
+    @FXML
     public CheckBox ch1;
 
     @FXML

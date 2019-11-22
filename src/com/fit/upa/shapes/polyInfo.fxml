@@ -10,7 +10,7 @@
 <AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.shapes.PolyInfo">
 
     <children>
-        <Button layoutX="71.0" layoutY="486.0" mnemonicParsing="false" text="back" onAction="#onClick"/>
+        <Button layoutX="71.0" layoutY="486.0" mnemonicParsing="false" onAction="#onClick" text="back" />
         <Text fx:id="name" layoutX="79.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
             <font>
                 <Font size="18.0" />
@@ -39,7 +39,8 @@
                 </AnchorPane>
             </content>
         </ScrollPane>
-        <CheckBox fx:id="ch1" onAction="#check" contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" text="Enable editing" />
+        <CheckBox fx:id="ch1" contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" onAction="#check" text="Enable editing" />
+      <Button layoutX="81.0" layoutY="362.0" mnemonicParsing="false" onAction="#onApply" text="Apply" />
     </children>
 
 </AnchorPane>
