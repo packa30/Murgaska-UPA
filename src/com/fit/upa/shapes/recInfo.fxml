@@ -40,6 +40,7 @@
             </content>
         </ScrollPane>
         <CheckBox fx:id="ch1" onAction="#check" contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" text="Enable editing" />
+        <Button layoutX="81.0" layoutY="362.0" mnemonicParsing="false" onAction="#onApply" text="Apply" />
     </children>
 
 </AnchorPane>

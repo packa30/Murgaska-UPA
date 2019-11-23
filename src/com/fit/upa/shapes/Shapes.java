@@ -213,14 +213,21 @@ public class Shapes{
     public class Rec extends Rectangle {
         public boolean enableEdit = false;
         public String name;
-        public double[] ordinates;
+        public Double[] ordinates;
+        public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
+        public TextField[] tfOrdinates;
         public Group rec = new Group();
         public Group root;
         public Circle[] cs;
         public Rec(double[] ordinates, String name, Group g){
             this.root = g;
             this.name = name;
-            this.ordinates = ordinates;
+            this.ordinates = new Double[4];
+            for(int i=0; i<ordinates.length; i++){
+                this.ordinates[i] = ordinates[i];
+            }
+            this.tfOrdinates = new TextField[4];
+
             Circle[] recCorners= {new Circle(ordinates[0], ordinates[1], 0),
                     new Circle(ordinates[2], ordinates[3], 0)};
             for(Circle c: recCorners){
@@ -241,6 +248,37 @@ public class Shapes{
             enableDrag(g,this);
         }
 
+        public void updateCoords(){
+            for(int i=0; i<cs.length; i++){
+                cs[i].setCenterX(ordinates[2*i]);
+                cs[i].setCenterY(ordinates[2*i+1]);
+            }
+            //Rec.super.getPoints().setAll(ordinates);
+            Rec.super.setX(ordinates[0]);
+            Rec.super.setY(ordinates[1]);
+            Rec.super.setWidth(ordinates[2]-ordinates[0]);
+            Rec.super.setHeight(ordinates[3]-ordinates[1]);
+        }
+
+        public void updateCoordFromTextField(){
+            for(int i=0; i<ordinates.length; i++){
+                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText());
+            }
+            updateCoords();
+        }
+
+        public void discardChanges(){
+            if(!ordinatesHistory.isEmpty()) {
+                ordinates = ordinatesHistory.get(0);
+                ordinatesHistory.clear();
+                updateCoords();
+            }
+        }
+
+        public void applyChanges(){
+            ordinatesHistory.clear();
+        }
+
         public void setEnableEdit(boolean state){
             enableEdit = state;
             shapeSelected = state;
@@ -259,29 +297,116 @@ public class Shapes{
         }
 
         private void enableDrag(Group g, com.fit.upa.shapes.Shapes.Rec owner) {
-
+            final Delta dragDelta = new Delta();
+            final Points startPoints = new Points();
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     if(!shapeSelected){
-                    try {
-                        MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));
-                        RecInfo.getInstance().setOwner(owner);
-                        RecInfo.getInstance().setName(name);
+                        try {
+                            MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));
+                            RecInfo.getInstance().setOwner(owner);
+                            RecInfo.getInstance().setName(name);
 
-                        if(owner.enableEdit){
-                            RecInfo.getInstance().setSelect();
+                            if(owner.enableEdit){
+                                RecInfo.getInstance().setSelect();
+                            }
+                            for(int i=0; i<4; i++){
+                                tfOrdinates[i] = new TextField(String.valueOf(ordinates[i]));
+                            }
+                            RecInfo.getInstance().getGPane().addRow(0, new Label("point 0"), tfOrdinates[0], tfOrdinates[1]);
+                            RecInfo.getInstance().getGPane().addRow(1, new Label("point 1"), tfOrdinates[2], tfOrdinates[3]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-
-                        //for(int i = 0; i < 2; i++) {
-                        RecInfo.getInstance().getGPane().addRow(0, new Label("point0"), new TextField(String.valueOf(ordinates[0])), new TextField(String.valueOf(ordinates[1])));
-                        RecInfo.getInstance().getGPane().addRow(1, new Label("point1"), new TextField(String.valueOf(ordinates[2])), new TextField(String.valueOf(ordinates[3])));
-                        //}
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                }}
+                    else {
+                        if(mouseEvent.getTarget() instanceof Circle){
+                            dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
+                            dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
+                            ordinatesHistory.add(ordinates.clone());
+                        }
+                        else if(mouseEvent.getTarget() instanceof Rec){
+                            dragDelta.x = mouseEvent.getX();
+                            dragDelta.y = mouseEvent.getY();/*
+                            startPoints.x1 = cs[0].getCenterX();
+                            startPoints.x2 = cs[1].getCenterX();
+                            startPoints.y1 = cs[0].getCenterY();
+                            startPoints.y2 = cs[1].getCenterY();*/
+                            ordinatesHistory.add(ordinates.clone());/*
+                            System.out.println("sp: "+ startPoints.x1 + startPoints.y1 + startPoints.x2 + startPoints.y2);
+                            System.out.println("oh: "+Arrays.toString(ordinates));*/
+                        }
+                    }
+                }
             });
+
+            g.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(shapeSelected) {
+                        if (mouseEvent.getTarget() instanceof Circle) {
+                            double newX = mouseEvent.getX() + dragDelta.x;
+                            double newY = mouseEvent.getY() + dragDelta.y;
+                            ((Circle) mouseEvent.getTarget()).setCenterX(newX);
+                            ((Circle) mouseEvent.getTarget()).setCenterY(newY);
+
+                            if(mouseEvent.getTarget().equals(cs[0])){
+                                Rec.super.setX(cs[0].getCenterX());
+                                Rec.super.setY(cs[0].getCenterY());
+                                Rec.super.setWidth(cs[1].getCenterX() - cs[0].getCenterX());
+                                Rec.super.setHeight(cs[1].getCenterY() - cs[0].getCenterY());
+
+                                ordinates[0] = newX;
+                                tfOrdinates[0].setText(String.valueOf(newX));
+                                ordinates[1] = newY;
+                                tfOrdinates[1].setText(String.valueOf(newY));
+                            }
+                            else{
+                                Rec.super.setWidth(cs[1].getCenterX() - cs[0].getCenterX());
+                                Rec.super.setHeight(cs[1].getCenterY() - cs[0].getCenterY());
+
+                                ordinates[2] = newX;
+                                tfOrdinates[2].setText(String.valueOf(newX));
+                                ordinates[3] = newY;
+                                tfOrdinates[3].setText(String.valueOf(newY));
+                            }
+                        } else if (mouseEvent.getTarget() instanceof Rec) {
+                            double deltaX = mouseEvent.getX() - dragDelta.x;
+                            double deltaY = mouseEvent.getY() - dragDelta.y;
+
+                            //cs[0].setCenterX(startPoints.x1+deltaX);
+                            cs[0].setCenterX(ordinatesHistory.get(ordinatesHistory.size()-1)[0]+deltaX);
+                            ordinates[0] = cs[0].getCenterX();
+                            tfOrdinates[0].setText(String.valueOf(ordinates[0]));
+                            //cs[1].setCenterX(startPoints.x2+deltaX);
+                            cs[1].setCenterX(ordinatesHistory.get(ordinatesHistory.size()-1)[2]+deltaX);
+                            ordinates[2] = cs[1].getCenterX();
+                            tfOrdinates[2].setText(String.valueOf(ordinates[2]));
+                            //cs[0].setCenterY(startPoints.y1+deltaY);
+                            cs[0].setCenterY(ordinatesHistory.get(ordinatesHistory.size()-1)[1]+deltaY);
+                            ordinates[1] = cs[0].getCenterY();
+                            tfOrdinates[1].setText(String.valueOf(ordinates[1]));
+                           // cs[1].setCenterY(startPoints.y2+deltaY);
+                            cs[1].setCenterY(ordinatesHistory.get(ordinatesHistory.size()-1)[3]+deltaY);
+                            ordinates[3] = cs[1].getCenterY();
+                            tfOrdinates[3].setText(String.valueOf(ordinates[3]));
+
+                            ordinates[0] = ordinatesHistory.get(ordinatesHistory.size()-1)[0]+deltaX;
+                            ordinates[1] = ordinatesHistory.get(ordinatesHistory.size()-1)[1]+deltaY;
+                            ordinates[2] = ordinatesHistory.get(ordinatesHistory.size()-1)[2]+deltaX;
+                            ordinates[3] = ordinatesHistory.get(ordinatesHistory.size()-1)[3]+deltaY;
+
+                            //TODO skusit prerobit
+                            Rec.super.setX(cs[0].getCenterX());
+                            Rec.super.setY(cs[0].getCenterY());
+                            Rec.super.setWidth(cs[1].getCenterX() - cs[0].getCenterX());
+                            Rec.super.setHeight(cs[1].getCenterY() - cs[0].getCenterY());
+                        }
+                    }
+                }
+            });
+
             g.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -292,4 +417,6 @@ public class Shapes{
     }
 
     private class Delta{double x,y;}
+
+    private class Points {double x1, y1, x2, y2;}
 }
