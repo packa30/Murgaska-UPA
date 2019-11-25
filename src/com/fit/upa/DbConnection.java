@@ -65,10 +65,14 @@ public class DbConnection {
                     int[] eleminfo = jGeometry.getElemInfo();
                     System.out.println(Arrays.toString(eleminfo));
                     System.out.println(Arrays.toString(ordinates));
+
+                    double[] viewOrdinates = changeToAppOrdinates(ordinates);
+
+                    //TODO pre dalsie objekty
                     if (eleminfo[2] == 3) {
                         arrayList.add(new ObjectsInDB(3,name, ordinates));
                     } else if (eleminfo[2] == 1) {
-                        arrayList.add(new ObjectsInDB(1,name, ordinates));
+                        arrayList.add(new ObjectsInDB(1,name, viewOrdinates));
                     }
                 }
             } catch (SQLException ex) {
@@ -78,6 +82,19 @@ public class DbConnection {
             }
         }
         return arrayList;
+    }
+
+    public double[] changeToAppOrdinates(double[] ordinates){
+        double[] viewOrdinates = new double[ordinates.length];
+        for(int i=0;i<ordinates.length;i++){
+            if(i%2==0){
+                viewOrdinates[i] = ordinates[i]*3.8;
+            }
+            else{
+                viewOrdinates[i] = 760-(ordinates[i]*3.8);
+            }
+        }
+        return viewOrdinates;
     }
 
     public Connection getConn(){

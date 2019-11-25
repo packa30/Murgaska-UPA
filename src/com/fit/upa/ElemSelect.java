@@ -26,7 +26,7 @@ public class ElemSelect {
         DbConnection dbConn = DbConnection.getInstance();
         System.out.println(dbConn.isConnected());
 
-        ArrayList<ObjectsInDB> arrayList = dbConn.query("SELECT c.name, c.geometry FROM city c");
+        ArrayList<ObjectsInDB> arrayList = dbConn.query("SELECT m.name, m.geometry FROM map m");
         System.out.println(arrayList);
         for(ObjectsInDB elem : arrayList) {
             System.out.println(">>" + elem.info());
