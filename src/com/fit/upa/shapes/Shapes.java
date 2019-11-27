@@ -26,7 +26,7 @@ public class Shapes{
             if(elem.type == 3){
                 Group rG = new Group();
                 g.getChildren().add(rG);
-                shapes.add(new Rec(elem.ordinates,elem.name, rG));
+                shapes.add(new Rec(elem.ordinates,elem.name,elem.objType, rG));
                 Rec r = (Rec)shapes.get(shapes.size() - 1);
                 System.out.println(r.name);
                 rG.getChildren().add(r);
@@ -34,7 +34,7 @@ public class Shapes{
             else if(elem.type == 1){
                 Group pG = new Group();
                 g.getChildren().add(pG);
-                shapes.add(new Poly(elem.ordinates, elem.name, pG));
+                shapes.add(new Poly(elem.ordinates, elem.name, elem.objType, pG));
                 Poly p = (Poly) shapes.get(shapes.size() - 1);
                 System.out.println(p.name);
                 pG.getChildren().add(p);
@@ -49,11 +49,13 @@ public class Shapes{
         public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
         public TextField[] tfOrdinates;
         public String name;
+        public String objType;
         public Group poly = new Group();
         public Group root;
 
-        public Poly(double[] ordinates, String name, Group g){
+        public Poly(double[] ordinates, String name, String objType, Group g){
             this.name = name;
+            this.objType = objType;
             //this.ordinates = ordinates;
             this.root = g;
             int pointsCount = ordinates.length/2-1;
@@ -74,9 +76,20 @@ public class Shapes{
             System.out.println(Arrays.toString(this.ordinates));
             super.getPoints().addAll(this.ordinates);
             root.getChildren().add(poly);
-            setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
-            setStroke(Color.GRAY);
+            System.out.println("$$$$"+this.objType);
+            if(this.objType.equals("land")){
+                setFill(Color.DARKGOLDENROD.deriveColor(1,1,1,1));
+                setStroke(Color.BROWN);
+            }
+            else{
+                setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
+                setStroke(Color.GRAY);
+            }
             enableDrag(root, this);
+        }
+
+        public String getObjType(){
+            return this.objType;
         }
 
         public void updateCoords(){
@@ -93,6 +106,8 @@ public class Shapes{
             }
             updateCoords();
         }
+
+
 
         public void discardChanges(){
             if(!ordinatesHistory.isEmpty()) {
@@ -213,16 +228,19 @@ public class Shapes{
     public class Rec extends Rectangle {
         public boolean enableEdit = false;
         public String name;
+        public String objType;
         public Double[] ordinates;
         public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
         public TextField[] tfOrdinates;
         public Group rec = new Group();
         public Group root;
         public Circle[] cs;
-        public Rec(double[] ordinates, String name, Group g){
+        public Rec(double[] ordinates, String name, String objType, Group g){
             this.root = g;
             this.name = name;
+            this.objType = objType;
             this.ordinates = new Double[4];
+            //System.out.println(">>>>>"+name+" "+Arrays.toString(ordinates));
             for(int i=0; i<ordinates.length; i++){
                 this.ordinates[i] = ordinates[i];
             }
@@ -236,15 +254,30 @@ public class Shapes{
                 rec.getChildren().add(c);
             }
             this.cs =recCorners;
+
             super.setX(ordinates[0]);
             super.setY(ordinates[1]);
             super.setWidth(ordinates[2]-ordinates[0]);
             super.setHeight(ordinates[3]-ordinates[1]);
 
-            g.getChildren().add(rec);
+            /*
+            double width = Math.abs(ordinates[2]-ordinates[0]);
+            double height = Math.abs(ordinates[3]-ordinates[1]);
+            super.setX(ordinates[0]);
+            super.setY(ordinates[1]-height);
+            super.setWidth(width);
+            super.setHeight(height);
+             */
 
-            setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
-            setStroke(Color.GRAY);
+            g.getChildren().add(rec);
+            if(this.objType.equals("build")){
+                setFill(Color.STEELBLUE.deriveColor(1,1,1,1));
+                setStroke(Color.BLUE);
+            }
+            else {
+                setFill(Color.DARKGRAY.deriveColor(1, 1, 1, 1));
+                setStroke(Color.GRAY);
+            }
             enableDrag(g,this);
         }
 

@@ -56,23 +56,21 @@ public class DbConnection {
 
                 while (rs.next()) {
                     String name = rs.getString(1);
-                    System.out.println(name);
-                    byte[] result = rs.getBytes(2);
+                    String objType = rs.getString(2);
+                    byte[] result = rs.getBytes(3);
                     JGeometry jGeometry;
                     jGeometry = JGeometry.load(result);
                     //System.out.println(jGeometry.toStringFull());
                     double[] ordinates = jGeometry.getOrdinatesArray();
                     int[] eleminfo = jGeometry.getElemInfo();
-                    System.out.println(Arrays.toString(eleminfo));
-                    System.out.println(Arrays.toString(ordinates));
 
                     double[] viewOrdinates = changeToAppOrdinates(ordinates);
 
                     //TODO pre dalsie objekty
                     if (eleminfo[2] == 3) {
-                        arrayList.add(new ObjectsInDB(3,name, ordinates));
+                        arrayList.add(new ObjectsInDB(3,objType,name, viewOrdinates));
                     } else if (eleminfo[2] == 1) {
-                        arrayList.add(new ObjectsInDB(1,name, viewOrdinates));
+                        arrayList.add(new ObjectsInDB(1,objType,name, viewOrdinates));
                     }
                 }
             } catch (SQLException ex) {
@@ -91,7 +89,8 @@ public class DbConnection {
                 viewOrdinates[i] = ordinates[i]*3.8;
             }
             else{
-                viewOrdinates[i] = 760-(ordinates[i]*3.8);
+                //viewOrdinates[i] = 760-(ordinates[i]*3.8);
+                viewOrdinates[i] = ordinates[i]*3.8;
             }
         }
         return viewOrdinates;
