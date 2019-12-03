@@ -1,37 +1,48 @@
+DROP INDEX map_geometry_sidx;
 CREATE INDEX map_geometry_sidx ON map(geometry) INDEXTYPE IS MDSYS.SPATIAL_INDEX;
 
-Create procedure EstatesElectricArea
+create or replace procedure EstatesElectricArea
 AS
-  SELECT estate.name, estate.type building
-  FROM map estate, map earea
-  WHERE  (estate.type = 'estate') AND (earea.COtype = 'electric-area') AND
-  	(SDO_RELATE(estate.geometry, earea.geometry, 'mask=ANYINTERACT') = 'TRUE')
-  ORDER BY estate.name ASC;
-GO;
+map_names VARCHAR2(32);
+map_types VARCHAR2(32);
+BEGIN
+  SELECT estate.name,estate.type into map_names, map_types from map estate, map earea
+  WHERE  (estate.type = 'estate') AND (earea.type = 'electric-area') AND
+		(SDO_RELATE(estate.geometry, earea.geometry, 'mask=ANYINTERACT') = 'TRUE')
+        ORDER BY estate.name ASC;
+END;
 
 Create procedure EstatesGasMast
 AS
-  SELECT estate.name, estate.type building
+map_names VARCHAR2(32);
+map_types VARCHAR2(32);
+BEGIN
+  SELECT estate.name,estate.type into map_names, map_types
   FROM map estate, map earea
   WHERE  (estate.type = 'estate') AND (earea.type = 'gas-mast') AND
   	(SDO_RELATE(estate.geometry, earea.geometry, 'mask=ANYINTERACT') = 'TRUE')
   ORDER BY estate.name ASC;
-GO;
+END;
 
 Create procedure EstatesGasArea
 AS
-  SELECT estate.name, estate.type building
+map_names VARCHAR2(32);
+map_types VARCHAR2(32);
+BEGIN
+  SELECT estate.name, estate.type into map_names, map_types
   FROM map estate, map earea
   WHERE  (estate.type = 'estate') AND (earea.type = 'gas-area') AND
   	(SDO_RELATE(estate.geometry, earea.geometry, 'mask=ANYINTERACT') = 'TRUE')
   ORDER BY estate.name ASC;
-GO;
+END;
 
-create procedure BuildsInGasArea
+create or replace procedure EstatesGasArea
 AS
-  SELECT build.name, build.type building
-  FROM map build, map earea
-  WHERE  (build.type = 'build') AND (earea.type = 'gas-area') AND
-  	(SDO_RELATE(build.geometry, earea.geometry, 'mask=ANYINTERACT') = 'TRUE')
-  ORDER BY build.name ASC;
-GO;
+map_names VARCHAR2(32);
+map_types VARCHAR2(32);
+BEGIN
+  SELECT estate.name,estate.type into map_names, map_types from map estate, map earea
+  WHERE  (estate.type = 'estate') AND (earea.type = 'gas-area') AND
+		(SDO_RELATE(estate.geometry, earea.geometry, 'mask=ANYINTERACT') = 'TRUE')
+        ORDER BY estate.name ASC;
+END;
