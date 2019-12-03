@@ -267,7 +267,7 @@ INSERT INTO map VALUES (
 );
 
 INSERT INTO map VALUES (
-	'area1', 'build1',
+	'area1-build1', 'build',
 	SDO_GEOMETRY(
     2003,
     NULL,
@@ -278,7 +278,7 @@ INSERT INTO map VALUES (
 );
 
 INSERT INTO map VALUES (
-	'area1', 'build2',
+	'area1-build2', 'build',
 	SDO_GEOMETRY(
     2003,
     NULL,
@@ -311,7 +311,7 @@ INSERT INTO map VALUES (
 );
 */
 INSERT INTO map VALUES (
-  'area3', 'builds',
+  'area3', 'estate',
   SDO_GEOMETRY(
     2003,
     NULL,
@@ -322,7 +322,7 @@ INSERT INTO map VALUES (
 );
 
 INSERT INTO map VALUES (
-	'area3', 'build1',
+	'area3-build1', 'build',
 	SDO_GEOMETRY(
     2003,
     NULL,
@@ -333,7 +333,7 @@ INSERT INTO map VALUES (
 );
 
 INSERT INTO map VALUES (
-	'area3', 'build2',
+	'area3-build2', 'build',
 	SDO_GEOMETRY(
     2003,
     NULL,
