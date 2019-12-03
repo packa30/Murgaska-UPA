@@ -4,6 +4,7 @@ package com.fit.upa.shapes;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -24,6 +25,9 @@ public class PolyInfo {
     @FXML
     public AnchorPane pane;
 
+    @FXML
+    public Button imageButton;
+
     public static PolyInfo instance;
     public PolyInfo(){
         instance = this;
@@ -37,6 +41,7 @@ public class PolyInfo {
     }
 
     public void initialize(){
+        imageButton.setVisible(false);
         name.setText("hello");
     }
 
@@ -87,5 +92,10 @@ public class PolyInfo {
 
     public void setSelect(){
         ch1.setSelected(true);
+    }
+
+    @FXML
+    public void onBtn(ActionEvent event) {
+        System.out.println("TODO button pre obrazok");
     }
 }

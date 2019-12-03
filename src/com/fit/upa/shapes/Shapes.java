@@ -155,7 +155,11 @@ public class Shapes{
                         MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("polyInfo.fxml")));
                         PolyInfo.getInstance().setOwner(owner);
                         PolyInfo.getInstance().setName(name);
-                        System.out.println("<<<<<>>>>>>");
+
+                        if(objType.equals("build")){
+                            PolyInfo.getInstance().imageButton.setVisible(true);
+                        }
+
                         if(owner.enableEdit){
                             PolyInfo.getInstance().setSelect();
                         }
@@ -340,6 +344,10 @@ public class Shapes{
                             MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));
                             RecInfo.getInstance().setOwner(owner);
                             RecInfo.getInstance().setName(name);
+
+                            if(objType.equals("build")){
+                                RecInfo.getInstance().imageButton.setVisible(true);
+                            }
 
                             if(owner.enableEdit){
                                 RecInfo.getInstance().setSelect();
