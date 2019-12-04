@@ -118,8 +118,20 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-
+    public void insert(String sql){
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public double[] changeToAppOrdinates(double[] ordinates){
