@@ -55,10 +55,10 @@ public class PolyInfo {
 
     @FXML
     public void onClick(ActionEvent event) throws IOException {
-        System.out.println("you clicked me");
         ch1.setSelected(false);
         owner.setEnableEdit(false);
         owner.discardChanges();
+        owner.orderObjects();
         //ElemSelect.getInstance().Apane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../mainMenu.fxml")));
         //pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
@@ -66,10 +66,11 @@ public class PolyInfo {
 
     @FXML
     public void onApply(ActionEvent event) {
-        System.out.println("Apply;");
         if(ch1.isSelected()){
             owner.updateCoordFromTextField();
             owner.applyChanges();
+            ch1.setSelected(false);
+            check();
         }
 
     }
@@ -78,15 +79,14 @@ public class PolyInfo {
     public CheckBox ch1;
 
     @FXML
-    public void check(ActionEvent event) throws IOException {
+    public void check(){//ActionEvent event) throws IOException {
         if(ch1.isSelected()){
-            System.out.println("mozes menit");
             owner.setEnableEdit(true);
         }
         if(!ch1.isSelected()){
-            System.out.println("nemozes menit");
             owner.setEnableEdit(false);
             owner.discardChanges();
+            owner.orderObjects();
         }
     }
 

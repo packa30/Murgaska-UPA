@@ -68,9 +68,9 @@ public class DbConnection {
 
                     //TODO pre dalsie objekty
                     if (eleminfo[2] == 3) {
-                        arrayList.add(new ObjectsInDB(3,objType,name, viewOrdinates));
+                        arrayList.add(new ObjectsInDB(3,objType,name, viewOrdinates, eleminfo));
                     } else if (eleminfo[2] == 1) {
-                        arrayList.add(new ObjectsInDB(1,objType,name, viewOrdinates));
+                        arrayList.add(new ObjectsInDB(1,objType,name, viewOrdinates, eleminfo));
                     }
                 }
             } catch (SQLException ex) {
@@ -80,6 +80,36 @@ public class DbConnection {
             }
         }
         return arrayList;
+    }
+
+    public void update(Double[] ordinates, String name, int[] elemInfo ){
+        /*update map set geometry = SDO_GEOMETRY(2003, NULL, NULL, -- 2D polygon
+                SDO_ELEM_INFO_ARRAY(1,1003,3), -- exterior rectangle
+                SDO_ORDINATE_ARRAY(150,145, 200,190)
+        ) where name = 'build1';*/
+        //System.out.println(Arrays.toString(elemInfo));
+       // System.out.println(arrayToString(elemInfo));
+        //System.out.println(Arrays.toString(ordinates));
+        double[] dbOrdinates = changeToDbOrdinates(ordinates);
+        String sql;
+        //if(elemInfo[2] == 3){ //jedna sa o obdlznik
+            sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(dbOrdinates)+") where name = '" + name + "'";
+            System.out.println(sql);
+        //}
+
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public double[] changeToAppOrdinates(double[] ordinates){
@@ -94,6 +124,34 @@ public class DbConnection {
             }
         }
         return viewOrdinates;
+    }
+
+    public double[] changeToDbOrdinates(Double[] ordinates){
+        double[] viewOrdinates = new double[ordinates.length];
+        for(int i =0; i<ordinates.length; i++){
+            viewOrdinates[i] = ordinates[i]/3.8;
+        }
+        return viewOrdinates;
+    }
+
+    public String arrayToString(int[] array){
+        String str = "(";
+        for(int i: array){
+            str += i+",";
+        }
+        str = str.substring(0, str.length() - 1);
+        str += ")";
+        return str;
+    }
+
+    public String arrayToString(double[] array){
+        String str = "(";
+        for(double i: array){
+            str += i+",";
+        }
+        str = str.substring(0, str.length() - 1);
+        str += ")";
+        return str;
     }
 
     public Connection getConn(){
