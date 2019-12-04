@@ -22,7 +22,7 @@ public class DbConnection {
     public void connect() {
         if(!connected) {
             try {
-                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xnocia00", "eWHhifOx");
+                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xgrofc00", "m2jCm39y");
                 connected = true;
             } catch (SQLException e) {
                 connected = false;

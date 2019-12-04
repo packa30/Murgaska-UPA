@@ -1,6 +1,7 @@
 package com.fit.upa.shapes;
 
 //import com.fit.upa.shapes.Rec;
+import com.fit.upa.MultiOBJ;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -95,7 +96,8 @@ public class RecInfo {
     }
 
     @FXML
-    public void onBtn(ActionEvent event) {
-        System.out.println("TODO button pre obrazok");
+    public void onBtn(ActionEvent event) throws IOException {
+        pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../multiOBJ.fxml")));
+        MultiOBJ.getInstance().setSpatObj(name);
     }
 }
