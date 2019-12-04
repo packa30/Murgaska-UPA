@@ -88,6 +88,18 @@ public class RecInfo {
 
     }
 
+    @FXML
+    public void onDelete(ActionEvent event) throws IOException {
+        if(ch1.isSelected()){
+            ch1.setSelected(false);
+            owner.setEnableEdit(false);
+            owner.discardChanges();
+            owner.orderObjects();
+            owner.delete();
+            pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../mainMenu.fxml")));
+        }
+    }
+
     public void setSelect(){
         ch1.setSelected(true);
     }

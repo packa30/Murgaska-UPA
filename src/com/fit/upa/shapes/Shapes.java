@@ -43,6 +43,20 @@ public class Shapes{
         }
         orderObject();
     }
+    public void deleteObj(String name){
+        int i = 0;
+        for(Rec rec: recs){
+            if(rec.name.equals(name)){
+                break;
+            }
+            i++;
+        }
+        if(i < recs.size()){
+            System.out.println(recs.get(i).name);
+            dbConn.delete(recs.get(i).name);
+            recs.remove(i);
+        }
+    }
 
     public void orderObject(){
         String[] order = {"land","road","build"};
@@ -314,6 +328,10 @@ public class Shapes{
 
         public void orderObjects(){
             Shapes.this.orderObject();
+        }
+        public void delete(){
+            Shapes.this.deleteObj(this.name);
+            Shapes.this.root.getChildren().remove(this.root);
         }
 
         public void updateCoords(){

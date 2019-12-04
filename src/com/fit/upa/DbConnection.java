@@ -82,14 +82,24 @@ public class DbConnection {
         return arrayList;
     }
 
+    public void delete(String name){
+        String sql;
+        sql = "delete from map where name = '"+name+"'";
+        System.out.println(sql);
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void update(Double[] ordinates, String name, int[] elemInfo ){
-        /*update map set geometry = SDO_GEOMETRY(2003, NULL, NULL, -- 2D polygon
-                SDO_ELEM_INFO_ARRAY(1,1003,3), -- exterior rectangle
-                SDO_ORDINATE_ARRAY(150,145, 200,190)
-        ) where name = 'build1';*/
-        //System.out.println(Arrays.toString(elemInfo));
-       // System.out.println(arrayToString(elemInfo));
-        //System.out.println(Arrays.toString(ordinates));
         double[] dbOrdinates = changeToDbOrdinates(ordinates);
         String sql;
         //if(elemInfo[2] == 3){ //jedna sa o obdlznik
