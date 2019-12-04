@@ -1,18 +1,23 @@
 package com.fit.upa;
 
+
 import com.fit.upa.shapes.Shapes;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
-import java.awt.*;
+import javafx.scene.control.TextField;
+import oracle.jdbc.driver.DBConversion;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,13 +36,20 @@ public class CreateMenu {
         instance = this;
     }
 
+    @FXML
+    private ChoiceBox elementType;
+
+    @FXML
+    private TextField elementName;
+
     public static CreateMenu getInstance(){
         return instance;
     }
 
     private ArrayList<Integer> listOfPoints;
     private ArrayList<Circle>  listOfCircles;
-    private ArrayList<Line>    listOfLines;
+
+    private DbConnection connect;
 
     public void initialize(){
         active = true;
@@ -46,7 +58,11 @@ public class CreateMenu {
         scene = (AnchorPane) group.getParent();
         listOfPoints  = new ArrayList<>();
         listOfCircles = new ArrayList<>();
-        listOfLines   = new ArrayList<>();
+
+        elementType = (ChoiceBox) pane.lookup("#typeBox");
+        elementName = (TextField) pane.lookup("#name");
+
+        connect = DbConnection.getInstance();
 
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -68,8 +84,10 @@ public class CreateMenu {
     }
 
     private void insertPoints(double x, double y){
-        listOfPoints.add((int)(x/3.8));
-        listOfPoints.add((int)(y/3.8));
+        if (!listOfPoints.contains((int)(x/3.8)) || !listOfPoints.contains((int)(y/3.8))){
+            listOfPoints.add((int)(x/3.8));
+            listOfPoints.add((int)(y/3.8));
+        }
     }
 
     private void createPoint(int x, int y){
@@ -78,67 +96,47 @@ public class CreateMenu {
         circle.setStroke(Color.TOMATO);
         listOfCircles.add(circle);
         group.getChildren().add(circle);
-/*
-        if(listOfPoints.size() > 3){
-            Line line = new Line(
-                    listOfPoints.get((int)(listOfPoints.size()-4))*3.8,
-                    listOfPoints.get((int)(listOfPoints.size()-3))*3.8,
-                    x,y);
-
-            listOfLines.add(line);
-            group.getChildren().add(line);
-        }
-*/
     }
 
     private void removeElems(){
         listOfCircles.forEach((circle) -> group.getChildren().remove(circle));
-        listOfLines.forEach((line) -> group.getChildren().remove(line));
-    }
-
-    public void onClick(){
-        active = false;
-        removeElems();
-        createElem("text","text2",2006);
-        try {
-            pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        listOfCircles.clear();
+        listOfPoints.clear();
     }
 
     private String createElem(String name, String type, int shapeType){
-        final String[] sqlQuery = {"INSERT INTO map VALUES(" + name + "," + type + ", SDO_GEOMETRY("};
+        final String[] sqlQuery = {"INSERT INTO map VALUES(\'" + name.toLowerCase() + "\',\'" + type + "\', SDO_GEOMETRY("};
 
         if(shapeType == 2001 && listOfPoints.size() == 2){
             //Point
             sqlQuery[0] += "2001,NULL,SDO_POINT_TYPE(";
             listOfPoints.forEach((n)-> sqlQuery[0] += n.toString() +",");
-            sqlQuery[0] += "NULL), NULL, NULL));";
+            sqlQuery[0] += "NULL), NULL, NULL))";
         }else if (shapeType == 2002 && listOfPoints.size() == 4){
             //Line
             sqlQuery[0] += "2002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,1), SDO_ORDINATE_ARRAY(";
             listOfPoints.forEach((n)-> sqlQuery[0] += n.toString() +",");
             sqlQuery[0]  = sqlQuery[0].substring(0,sqlQuery[0].length()-1);
-            sqlQuery[0] += ")));";
+            sqlQuery[0] += ")))";
         }else if(shapeType == 2003 && listOfPoints.size() == 6){
             //Circle
             sqlQuery[0] += "2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,4), SDO_ORDINATE_ARRAY(";
             listOfPoints.forEach((n)-> sqlQuery[0] += n.toString() +",");
             sqlQuery[0]  = sqlQuery[0].substring(0,sqlQuery[0].length()-1);
-            sqlQuery[0] += ")));";
+            sqlQuery[0] += ")))";
         }else if(shapeType == 2003 && listOfPoints.size() > 6){
             //Polygon
             sqlQuery[0] += "2003,NULL,NULL,";
-            if(type.equals("estate")){
+            if(true){
                 sqlQuery[0] += "SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(";
             }else{
                 sqlQuery[0] += "SDO_ELEM_INFO_ARRAY(1,2003,1), SDO_ORDINATE_ARRAY(";
             }
             listOfPoints.forEach((n)-> sqlQuery[0] += n.toString() +",");
-            sqlQuery[0]  = sqlQuery[0].substring(0,sqlQuery[0].length()-1);
-            sqlQuery[0] += ")));";
-        }else if(shapeType == 2006){
+
+            sqlQuery[0] += listOfPoints.get(0) + "," + listOfPoints.get(1);
+            sqlQuery[0] += ")))";
+        }else if(shapeType == 2002 && listOfPoints.size() > 4){
             int cnt = 1 + listOfPoints.size()/4;
             sqlQuery[0] += "2006,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,4," + cnt + ", ";
 
@@ -156,11 +154,76 @@ public class CreateMenu {
             }
 
             sqlQuery[0]  = sqlQuery[0].substring(0,sqlQuery[0].length()-1);
-            sqlQuery[0] += ")));";
+            sqlQuery[0] += ")))";
+        }else{
+            sqlQuery[0] = "";
         }
 
         System.out.println(sqlQuery[0]);
         return sqlQuery[0];
     }
 
+
+    private int elemTypeToShapeType(String type){
+        if(type.equals("Electric-mast") || type.equals("Gas-mast")){
+            return 2001;
+        }else if (type.equals("Electric-net") || type.equals("Gas-pipeline")){
+            return 2002;
+        }else{
+            return 2003;
+        }
+    }
+
+    public String createArea(int shape, String name,String type){
+        int x = listOfPoints.get(0);
+        int y = listOfPoints.get(1);
+        String data;
+
+        if(type.toLowerCase().equals("electric-mast")){
+            data = x + "," + (y-10) + "," + (x+10) + "," + y + "," + x + "," + (y+10);
+        }else{
+            data = x + "," + (y-15) + "," + (x+15) + "," + y + "," + x + "," + (y+15);
+        }
+
+        return "INSERT INTO map VALUES(\'" + name.toLowerCase() + "\',\'" + type.replace("mast","area").toLowerCase() +
+                "\', SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,4), SDO_ORDINATE_ARRAY(" + data + ")))";
+    }
+
+    public void onSave(ActionEvent actionEvent) {
+        if(listOfPoints.isEmpty()){
+            return;
+        }
+
+        if (elemTypeToShapeType(elementType.getValue().toString()) != 2001) {
+            String insert = createElem(elementName.getText(), elementType.getValue().toString(), elemTypeToShapeType(elementType.getValue().toString()));
+            if(!insert.isEmpty()){
+                connect.connect();
+                connect.insert(insert);
+            }
+        }
+
+        if (elemTypeToShapeType(elementType.getValue().toString()) == 2001){
+            System.out.println(createArea(elemTypeToShapeType(elementType.getValue().toString()),elementName.getText(),elementType.getValue().toString()));
+        }
+
+        ArrayList<ObjectsInDB> arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m");
+        Shapes shapes = new Shapes(arrayList, group);
+
+        removeElems();
+    }
+
+    public void onRevert(ActionEvent actionEvent) {
+        removeElems();
+    }
+
+    public void onExit(ActionEvent actionEvent) {
+        removeElems();
+        active = false;
+
+        try {
+            pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

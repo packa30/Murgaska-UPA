@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.CreateMenu">
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.text.Text?>
+<AnchorPane fx:id="pane" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.CreateMenu">
     <children>
-        <Button layoutX="71.0" layoutY="486.0" mnemonicParsing="false" onAction="#onClick" text="back" />
-        <Text fx:id="name" layoutX="79.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-        <ScrollPane hbarPolicy="NEVER" layoutX="13.0" layoutY="143.0" prefHeight="200.0" prefWidth="200.0">
-            <content>
-                <GridPane fx:id="gpane" layoutX="3.0" layoutY="3.0" prefHeight="194.0" prefWidth="182.0">
+        <TextField layoutX="20.0" layoutY="435.0" fx:id="name"   prefHeight="26.0"   prefWidth="90.0" text=""/>
 
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="40.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="70" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="70.0" />
-                    </columnConstraints>
-                </GridPane>
-            </content>
-        </ScrollPane>
+        <ChoiceBox value="Estate" fx:id="typeBox" layoutX="140.0" layoutY="435.0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Estate" />
+                    <String fx:value="Build" />
+                    <String fx:value="Electric-mast" />
+                    <String fx:value="Electric-net" />
+                    <String fx:value="Gas-mast" />
+                    <String fx:value="Gas-pipeline" />
+                    <String fx:value="Road" />
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+
+        <Button layoutX="80.0" layoutY="485.0" mnemonicParsing="false" onAction="#onExit"   prefHeight="26.0" prefWidth="70.0" text="Exit" />
+        <Button layoutX="80.0" layoutY="525.0" mnemonicParsing="false" onAction="#onRevert" prefHeight="26.0" prefWidth="70.0" text="Revert" />
+        <Button layoutX="80.0" layoutY="565.0" mnemonicParsing="false" onAction="#onSave"   prefHeight="26.0" prefWidth="70.0" text="Save" />
     </children>
 </AnchorPane>
