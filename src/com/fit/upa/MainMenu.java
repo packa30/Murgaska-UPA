@@ -3,6 +3,7 @@ package com.fit.upa;
 import com.fit.upa.shapes.PolyInfo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class MainMenu {
     @FXML
     public AnchorPane pane;
+    public static Group drawGroup;
 
     public static MainMenu instance;
     public MainMenu(){

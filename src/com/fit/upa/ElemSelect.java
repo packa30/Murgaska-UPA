@@ -29,7 +29,7 @@ public class ElemSelect {
         ArrayList<ObjectsInDB> arrayList = dbConn.query("SELECT m.name, m.type, m.geometry FROM map m");
         Shapes shapes = new Shapes(arrayList, group);
 
-        Main.drawGroup = group;
+        MainMenu.drawGroup = group;
         System.out.println(">>"+group);
     }
 }

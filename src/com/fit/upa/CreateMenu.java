@@ -41,7 +41,7 @@ public class CreateMenu {
 
     public void initialize(){
         active = true;
-        group = Main.drawGroup;
+        group = MainMenu.drawGroup;
 
         scene = (AnchorPane) group.getParent();
         listOfPoints  = new ArrayList<>();
