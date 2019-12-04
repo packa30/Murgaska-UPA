@@ -1,7 +1,6 @@
 DROP TABLE map;
 
 CREATE TABLE map(
-    id   NUMBER(8,2),
 	name VARCHAR2(32),
 	type VARCHAR2(32),
 	geometry SDO_GEOMETRY,
