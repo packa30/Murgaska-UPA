@@ -24,11 +24,18 @@
 
     <children>
         <Button fx:id="backImg" layoutX="71.0" layoutY="486.0" mnemonicParsing="false" onAction="#backImg" text="back" />
-
-
         <Button fx:id="addImg" layoutX="70.0" layoutY="120.0" mnemonicParsing="false" onAction="#addImg" text="Add Img" />
-        <Button fx:id="showImgs" layoutX="70.0" layoutY="179.0" mnemonicParsing="false" onAction="#showImg" text="back" />
+<!--        <Button fx:id="showImg" layoutX="70.0" layoutY="179.0" mnemonicParsing="false" onAction="#showImg" text="showImg" />-->
     </children>
 
+    <AnchorPane fx:id="imageOut" layoutX="20.0" layoutY="200.0" prefHeight="200.0" prefWidth="200.0"/>
+    <Button fx:id="prev" layoutX="50.0" layoutY="450.0" mnemonicParsing="false" onAction="#prev" text="previous" visible="false" />
+    <Button fx:id="next" layoutX="150.0" layoutY="450.0" mnemonicParsing="false" onAction="#next" text="next"  visible="true"/>
+    <Button fx:id="delImg" layoutX="250.0" layoutY="450.0" mnemonicParsing="false" onAction="#delImg" text="Delete img" visible="false"/>
+
 </AnchorPane>
+
+
+
+
 
