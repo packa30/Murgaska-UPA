@@ -5,6 +5,7 @@ import com.fit.upa.MultiOBJ;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.AnchorPane;
@@ -14,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.event.ActionEvent;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class RecInfo {
     public Shapes.Rec owner;
@@ -96,8 +98,10 @@ public class RecInfo {
     }
 
     @FXML
-    public void onBtn(ActionEvent event) throws IOException {
+    public void onBtn(ActionEvent event) throws IOException, SQLException {
         pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../multiOBJ.fxml")));
         MultiOBJ.getInstance().setSpatObj(name);
+        MultiOBJ.getInstance().setIndex(0);
+        MultiOBJ.getInstance().showImg();
     }
 }

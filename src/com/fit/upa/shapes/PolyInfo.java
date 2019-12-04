@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.event.ActionEvent;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class PolyInfo {
     public Shapes.Poly owner;
@@ -96,8 +97,10 @@ public class PolyInfo {
     }
 
     @FXML
-    public void onBtn(ActionEvent event) throws IOException {
+    public void onBtn(ActionEvent event) throws IOException, SQLException {
         pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../multiOBJ.fxml")));
         MultiOBJ.getInstance().setSpatObj(name);
+        MultiOBJ.getInstance().setIndex(0);
+        MultiOBJ.getInstance().showImg();
     }
 }
