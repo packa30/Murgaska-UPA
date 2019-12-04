@@ -1,8 +1,15 @@
 package com.fit.upa;
 
+import com.fit.upa.shapes.PolyInfo;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+
+import java.io.IOException;
 
 public class MainMenu {
     @FXML
@@ -15,7 +22,18 @@ public class MainMenu {
     public static MainMenu getInstance(){
         return instance;
     }
+
     public AnchorPane getAnchor(){
         return pane;
+    }
+
+    public void onAddObj() throws IOException {
+        System.out.println("Hello my create");
+
+        try {
+            MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("createMenu.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
