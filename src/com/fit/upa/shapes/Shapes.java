@@ -1,4 +1,5 @@
 package com.fit.upa.shapes;
+import com.fit.upa.CreateMenu;
 import com.fit.upa.DbConnection;
 import com.fit.upa.MainMenu;
 import com.fit.upa.ObjectsInDB;
@@ -109,7 +110,10 @@ public class Shapes{
             }
             super.getPoints().addAll(this.ordinates);
             root.getChildren().add(poly);
-            if(this.objType.equals("land")){
+
+            System.out.println(this.objType);
+
+            if(this.objType.equals("build")){
                 setFill(Color.DARKGOLDENROD.deriveColor(1,1,1,1));
                 setStroke(Color.BROWN);
             }
@@ -186,42 +190,54 @@ public class Shapes{
                     //System.out.println(name);
                 }
             });
+
+
+
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(!shapeSelected){
-                    try {
-                        MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("polyInfo.fxml")));
-                        PolyInfo.getInstance().setOwner(owner);
-                        PolyInfo.getInstance().setName(name);
-
-                        if(objType.equals("build")){
-                            PolyInfo.getInstance().imageButton.setVisible(true);
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
                         }
-
-                        if(owner.enableEdit){
-                            PolyInfo.getInstance().setSelect();
-                        }
-                        for(int i = 0; i < ordinates.length/2; i++) {
-                            tfOrdinates[2*i] = new TextField(String.valueOf(ordinates[2*i]/3.8));
-                            tfOrdinates[2*i+1] = new TextField(String.valueOf(ordinates[2*i+1]/3.8));
-                            PolyInfo.getInstance().getGPane().addRow(i, new Label("point "+i), tfOrdinates[i*2], tfOrdinates[i*2+1]);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-                    ;
-                    }
-                    else {
-                        if(mouseEvent.getTarget() instanceof Circle){
-                            dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
-                            dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
-                            ordinatesHistory.add(ordinates.clone());
+
+                    if (active){
+                        if(!shapeSelected){
+                            try {
+                                MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("polyInfo.fxml")));
+                                PolyInfo.getInstance().setOwner(owner);
+                                PolyInfo.getInstance().setName(name);
+
+                                if(objType.equals("build")){
+                                    PolyInfo.getInstance().imageButton.setVisible(true);
+                                }
+
+                                if(owner.enableEdit){
+                                    PolyInfo.getInstance().setSelect();
+                                }
+                                for(int i = 0; i < ordinates.length/2; i++) {
+                                    tfOrdinates[2*i] = new TextField(String.valueOf(ordinates[2*i]/3.8));
+                                    tfOrdinates[2*i+1] = new TextField(String.valueOf(ordinates[2*i+1]/3.8));
+                                    PolyInfo.getInstance().getGPane().addRow(i, new Label("point "+i), tfOrdinates[i*2], tfOrdinates[i*2+1]);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ;
                         }
-                        else if(mouseEvent.getTarget() instanceof Poly){
-                            dragDelta.x = mouseEvent.getX();
-                            dragDelta.y = mouseEvent.getY();
-                            ordinatesHistory.add(ordinates.clone());
+                        else {
+                            if(mouseEvent.getTarget() instanceof Circle){
+                                dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
+                                dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
+                                ordinatesHistory.add(ordinates.clone());
+                            }
+                            else if(mouseEvent.getTarget() instanceof Poly){
+                                dragDelta.x = mouseEvent.getX();
+                                dragDelta.y = mouseEvent.getY();
+                                ordinatesHistory.add(ordinates.clone());
+                            }
                         }
                     }
                 }
@@ -393,46 +409,56 @@ public class Shapes{
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(!shapeSelected){
-                        try {
-                            MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));
-                            RecInfo.getInstance().setOwner(owner);
-                            RecInfo.getInstance().setName(name);
-
-                            if(objType.equals("build")){
-                                RecInfo.getInstance().imageButton.setVisible(true);
-                            }
-
-                            if(owner.enableEdit){
-                                RecInfo.getInstance().setSelect();
-                            }
-                            for(int i=0; i<4; i++){
-                                tfOrdinates[i] = new TextField(String.valueOf(ordinates[i]/3.8));
-                            }
-                            RecInfo.getInstance().getGPane().addRow(0, new Label("point 0"), tfOrdinates[0], tfOrdinates[1]);
-                            RecInfo.getInstance().getGPane().addRow(1, new Label("point 1"), tfOrdinates[2], tfOrdinates[3]);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
                         }
                     }
-                    else {
-                        if(mouseEvent.getTarget() instanceof Circle){
-                            dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
-                            dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
-                            ordinatesHistory.add(ordinates.clone());
+
+                    if (active){
+                        if(!shapeSelected){
+                            try {
+                                MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));
+                                RecInfo.getInstance().setOwner(owner);
+                                RecInfo.getInstance().setName(name);
+
+                                if(objType.equals("build")){
+                                    RecInfo.getInstance().imageButton.setVisible(true);
+                                }
+
+                                if(owner.enableEdit){
+                                    RecInfo.getInstance().setSelect();
+                                }
+                                for(int i=0; i<4; i++){
+                                    tfOrdinates[i] = new TextField(String.valueOf(ordinates[i]/3.8));
+                                }
+                                RecInfo.getInstance().getGPane().addRow(0, new Label("point 0"), tfOrdinates[0], tfOrdinates[1]);
+                                RecInfo.getInstance().getGPane().addRow(1, new Label("point 1"), tfOrdinates[2], tfOrdinates[3]);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        else if(mouseEvent.getTarget() instanceof Rec){
-                            dragDelta.x = mouseEvent.getX();
-                            dragDelta.y = mouseEvent.getY();/*
+                        else {
+                            if(mouseEvent.getTarget() instanceof Circle){
+                                dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
+                                dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
+                                ordinatesHistory.add(ordinates.clone());
+                            }
+                            else if(mouseEvent.getTarget() instanceof Rec){
+                                dragDelta.x = mouseEvent.getX();
+                                dragDelta.y = mouseEvent.getY();/*
                             startPoints.x1 = cs[0].getCenterX();
                             startPoints.x2 = cs[1].getCenterX();
                             startPoints.y1 = cs[0].getCenterY();
                             startPoints.y2 = cs[1].getCenterY();*/
-                            ordinatesHistory.add(ordinates.clone());/*
+                                ordinatesHistory.add(ordinates.clone());/*
                             System.out.println("sp: "+ startPoints.x1 + startPoints.y1 + startPoints.x2 + startPoints.y2);
                             System.out.println("oh: "+Arrays.toString(ordinates));*/
+                            }
                         }
                     }
+
                 }
             });
 
