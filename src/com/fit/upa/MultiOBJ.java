@@ -36,8 +36,11 @@ public class MultiOBJ {
     private static final String SQL_FIND_IMAGE = "SELECT image FROM MultiOBJ WHERE spatname = ?";
     private static final String SQL_FIND_DEL_IMAGE = "SELECT id FROM MultiOBJ WHERE spatname = ?";
     private static final String SQL_DELETE_IMAGE = "DELETE FROM MultiOBJ WHERE id = ?";
+    private static final String SQL_SIMILAR_IMAGE = "SELECT dst.id, SI_ScoreByFtrList(new SI_FeatureList(src.image_ac,?,src.image_ch,?,src.image_pc,?,src.image_tx,?),dst.image_si) AS similarity FROM multiobj src, multiobj dst WHERE (src.id = ?) AND (src.id <> dst.id) ORDER BY similarity ASC";
 
-//    private static final String SQL_UPDATE_DATA = "UPDATE MultyOBJ SET title = ? WHERE id = ?";
+
+
+    //    private static final String SQL_UPDATE_DATA = "UPDATE MultyOBJ SET title = ? WHERE id = ?";
 //    private static final String SQL_SELECT_IMAGE_FOR_UPDATE = "SELECT image FROM MultyOBJ WHERE id = ? FOR UPDATE";
 //
 //    private static final String SQL_MAX_ID = "SELECT MAX(id) FROM MultyOBJ";
@@ -85,6 +88,9 @@ public class MultiOBJ {
 
     @FXML
     public AnchorPane imageOut;
+
+    @FXML
+    public AnchorPane imageSim;
 
     public static MultiOBJ instance;
     public MultiOBJ() throws IOException, SQLException {
@@ -204,6 +210,7 @@ public class MultiOBJ {
         if (rs.next()){
             imageOut.setVisible(true);
             delImg.setVisible(true);
+            imageSim.setVisible(false);
             Image image = getImgFromDB(rs);
             this.imageOut.getChildren().clear();
             if(image != null)
@@ -300,6 +307,37 @@ public class MultiOBJ {
         selectedUpdateImg(rs.getBigDecimal(1).intValue(),ordImage);
         dbConn.getConn().setAutoCommit(previousAutoCommit);
         showImg();
+    }
+
+    public void findSim(ActionEvent event) throws IOException, SQLException {
+        ResultSet rs = findWithID();
+        try (PreparedStatement preparedStatement = dbConn.getConn().prepareStatement(SQL_SIMILAR_IMAGE)) {
+            preparedStatement.setDouble(1, 0.7);
+            preparedStatement.setDouble(2, 0.7);
+            preparedStatement.setDouble(3, 0.7);
+            preparedStatement.setDouble(4, 0.7);
+            preparedStatement.setInt(5, rs.getBigDecimal(1).intValue());
+            ResultSet resultSet2 = preparedStatement.executeQuery();
+            if (resultSet2.next()){
+                showSimImg(resultSet2.getInt(1));
+            }
+        }
+    }
+
+    public void showSimImg(int id) throws IOException, SQLException {
+        ResultSet resultSet = selectImg(id);
+        OrdImage oImage = getSelectedImg(resultSet);
+        if (oImage != null){
+            BufferedImage buffImg = ImageIO.read(new ByteArrayInputStream(oImage.getDataInByteArray()));
+            Image image = SwingFXUtils.toFXImage(buffImg, null);
+            if(image != null){
+                ImageView imgView = new ImageView(image);
+                imgView.fitWidthProperty().bind(this.imageSim.widthProperty());
+                imgView.fitHeightProperty().bind(this.imageSim.heightProperty());
+                this.imageSim.getChildren().add(imgView);
+                imageSim.setVisible(true);
+            }
+        }
     }
 
     public void rotateImgRight(ActionEvent event) throws SQLException, IOException {

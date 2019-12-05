@@ -23,17 +23,20 @@
 <AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.MultiOBJ">
 
     <children>
-        <Button fx:id="backImg" layoutX="71.0" layoutY="486.0" mnemonicParsing="false" onAction="#backImg" text="back" />
+        <Button fx:id="backImg" layoutX="71.0" layoutY="520.0" mnemonicParsing="false" onAction="#backImg" text="back" />
+        <Button fx:id="findSim" layoutX="71.0" layoutY="580.0" mnemonicParsing="false" onAction="#findSim" text="find similar" />
         <Button fx:id="addImg" layoutX="70.0" layoutY="120.0" mnemonicParsing="false" onAction="#addImg" text="Add Img" />
 <!--        <Button fx:id="showImg" layoutX="70.0" layoutY="179.0" mnemonicParsing="false" onAction="#showImg" text="showImg" />-->
     </children>
 
     <AnchorPane fx:id="imageOut" layoutX="20.0" layoutY="200.0" prefHeight="200.0" prefWidth="300.0" maxHeight="200.0" maxWidth="300.0"/>
-    <Button fx:id="prev" layoutX="50.0" layoutY="450.0" mnemonicParsing="false" onAction="#prev" text="previous" visible="false" />
-    <Button fx:id="next" layoutX="150.0" layoutY="450.0" mnemonicParsing="false" onAction="#next" text="next"  visible="true"/>
-    <Button fx:id="delImg" layoutX="250.0" layoutY="450.0" mnemonicParsing="false" onAction="#delImg" text="Delete" visible="false"/>
-    <Button fx:id="rotateImgLeft" layoutX="350.0" layoutY="450.0" mnemonicParsing="false" onAction="#rotateImgLeft" text="Rotate left" />
-    <Button fx:id="rotateImgRight" layoutX="450.0" layoutY="450.0" mnemonicParsing="false" onAction="#rotateImgRight" text="Rotate right" />
+    <AnchorPane fx:id="imageSim" layoutX="450.0" layoutY="200.0" prefHeight="200.0" prefWidth="300.0" maxHeight="200.0" maxWidth="300.0" visible="false"/>
+
+    <Button fx:id="prev" layoutX="30.0" layoutY="450.0" mnemonicParsing="false" onAction="#prev" text="Prev" visible="false" />
+    <Button fx:id="next" layoutX="110.0" layoutY="450.0" mnemonicParsing="false" onAction="#next" text="Next"  visible="true"/>
+    <Button fx:id="delImg" layoutX="190.0" layoutY="450.0" mnemonicParsing="false" onAction="#delImg" text="Delete" visible="false"/>
+    <Button fx:id="rotateImgLeft" layoutX="270.0" layoutY="450.0" mnemonicParsing="false" onAction="#rotateImgLeft" text="R~left" />
+    <Button fx:id="rotateImgRight" layoutX="350.0" layoutY="450.0" mnemonicParsing="false" onAction="#rotateImgRight" text="R~right" />
 </AnchorPane>
 
 
