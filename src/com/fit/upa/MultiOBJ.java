@@ -114,28 +114,28 @@ public class MultiOBJ {
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
         if (selectedFiles != null){
             for (File child : selectedFiles) {
-                toDBFile(dbConn.getConn(), child.toString());
+                toDBFile(child.toString());
             }
         }
         showImg();
     }
 
-    private void recreateStillImageData(Connection connection, int rs) throws SQLException {
-        try (PreparedStatement preparedStatementSi = connection.prepareStatement(SQL_UPDATE_STILLIMAGE)) {
+    private void recreateStillImageData(int rs) throws SQLException {
+        try (PreparedStatement preparedStatementSi = dbConn.getConn().prepareStatement(SQL_UPDATE_STILLIMAGE)) {
             preparedStatementSi.setInt(1, rs);
             preparedStatementSi.executeUpdate();
         }
-        try (PreparedStatement preparedStatementSiMeta = connection.prepareStatement(SQL_UPDATE_STILLIMAGE_META)) {
+        try (PreparedStatement preparedStatementSiMeta = dbConn.getConn().prepareStatement(SQL_UPDATE_STILLIMAGE_META)) {
             preparedStatementSiMeta.setInt(1, rs);
             preparedStatementSiMeta.executeUpdate();
         }
     }
 
-    public void toDBFile(Connection connection, String filename) throws SQLException, IOException{
-        final boolean previousAutoCommit = connection.getAutoCommit();
-        connection.setAutoCommit(false);
-        try (PreparedStatement Insert = connection.prepareStatement(SQL_INSERT_NEW, new String[] { "id", "spatname", "spattype" })){
-            OrdImage ordImage;
+    public void toDBFile(String filename) throws SQLException, IOException{
+        final boolean previousAutoCommit = dbConn.getConn().getAutoCommit();
+        dbConn.getConn().setAutoCommit(false);
+        try (PreparedStatement Insert = dbConn.getConn().prepareStatement(SQL_INSERT_NEW, new String[] { "id", "spatname", "spattype" })){
+
             Insert.setString(1, String.valueOf(SpatObj.getText()));
             Insert.setString(2, "build");
             Insert.executeQuery();
@@ -143,30 +143,51 @@ public class MultiOBJ {
 
             ResultSet rs = Insert.getGeneratedKeys();
             rs.next();
-            int right = rs.getBigDecimal(1).intValue();
+            ResultSet resultSet = selectImg(rs.getBigDecimal(1).intValue());
+            OrdImage ordImage = getSelectedImg(resultSet,filename);
+            selectedUpdateImg(rs.getBigDecimal(1).intValue(),ordImage);
 
-            try (PreparedStatement find = connection.prepareStatement(SQL_SELECT_IMAGE_FOR_UPDATE)) {
-                find.setInt(1, right);
-                try (ResultSet resultSet = find.executeQuery()) {
-                    if (resultSet.next()) {
-                        final OracleResultSet oracleResultSet = (OracleResultSet) resultSet;
-                        ordImage = (OrdImage) oracleResultSet.getORAData(1, OrdImage.getORADataFactory());
-                        ordImage.loadDataFromFile(filename);
-                        ordImage.setProperties();
-                        try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(SQL_UPDATE_IMAGE)) {
-                            final OraclePreparedStatement fin = (OraclePreparedStatement) preparedStatementUpdate;
-                            fin.setORAData(1, ordImage);
-                            preparedStatementUpdate.setInt(2, right);
-                            preparedStatementUpdate.executeUpdate();
-                        }
-                        recreateStillImageData(connection, right);
-                    }
-                }
-            }
         } finally {
-            connection.setAutoCommit(previousAutoCommit);
+            dbConn.getConn().setAutoCommit(previousAutoCommit);
         }
     }
+
+    public ResultSet selectImg(int id) throws SQLException {
+        PreparedStatement find = dbConn.getConn().prepareStatement(SQL_SELECT_IMAGE_FOR_UPDATE);
+        find.setInt(1, id);
+        ResultSet resultSet = find.executeQuery();
+        if (resultSet.next()) {
+            return resultSet;
+        }
+        return null;
+    }
+
+    public OrdImage getSelectedImg(ResultSet resultSet, String filename) throws SQLException, IOException {
+        OrdImage ordImage;
+        final OracleResultSet oracleResultSet = (OracleResultSet) resultSet;
+        ordImage = (OrdImage) oracleResultSet.getORAData(1, OrdImage.getORADataFactory());
+        ordImage.loadDataFromFile(filename);
+        ordImage.setProperties();
+        return ordImage;
+    }
+
+    public OrdImage getSelectedImg(ResultSet resultSet) throws SQLException, IOException {
+        OrdImage ordImage;
+        final OracleResultSet oracleResultSet = (OracleResultSet) resultSet;
+        ordImage = (OrdImage) oracleResultSet.getORAData(1, OrdImage.getORADataFactory());
+        return ordImage;
+    }
+
+    public void selectedUpdateImg(int id, OrdImage ordImage) throws SQLException, IOException {
+        try (PreparedStatement preparedStatementUpdate = dbConn.getConn().prepareStatement(SQL_UPDATE_IMAGE)) {
+            final OraclePreparedStatement fin = (OraclePreparedStatement) preparedStatementUpdate;
+            fin.setORAData(1, ordImage);
+            preparedStatementUpdate.setInt(2, id);
+            preparedStatementUpdate.executeUpdate();
+        }
+        recreateStillImageData(id);
+    }
+
 
     public OracleResultSet findImg() throws SQLException, IOException {
         OraclePreparedStatement pstmt = null;
@@ -176,6 +197,7 @@ public class MultiOBJ {
         rs = (OracleResultSet)pstmt.executeQuery();
         return rs;
     }
+
     public void showImg() throws SQLException, IOException {
         OracleResultSet rs = findImg();
         rs=findCur(rs);
@@ -235,7 +257,7 @@ public class MultiOBJ {
         }
     }
 
-    public ResultSet findForDel() throws SQLException {
+    public ResultSet findWithID() throws SQLException {
         PreparedStatement find = dbConn.getConn().prepareStatement(SQL_FIND_DEL_IMAGE);
         find.setString(1, String.valueOf(SpatObj.getText()));
         ResultSet rs = find.executeQuery();
@@ -247,7 +269,7 @@ public class MultiOBJ {
     }
 
     public void delImg() throws SQLException, IOException {
-        ResultSet rs = findForDel();
+        ResultSet rs = findWithID();
         if(rs!=null){
             OraclePreparedStatement pstmt = null;
             pstmt = (OraclePreparedStatement)dbConn.getConn().prepareStatement(SQL_DELETE_IMAGE);
@@ -257,8 +279,7 @@ public class MultiOBJ {
         }
     }
 
-    public Image getImgFromDB(OracleResultSet rs) throws SQLException, IOException
-    {
+    public Image getImgFromDB(OracleResultSet rs) throws SQLException, IOException {
 
         OrdImage oImage = (OrdImage)rs.getORAData("image",OrdImage.getORADataFactory());
         if (oImage != null){
@@ -267,6 +288,26 @@ public class MultiOBJ {
             return image;
         }
         return null;
+    }
+
+    public void rotateImg(int angle) throws SQLException, IOException {
+        final boolean previousAutoCommit = dbConn.getConn().getAutoCommit();
+        dbConn.getConn().setAutoCommit(false);
+        ResultSet rs = findWithID();
+        ResultSet resultSet = selectImg(rs.getBigDecimal(1).intValue());
+        OrdImage ordImage = getSelectedImg(resultSet);
+        ordImage.process("rotate="+angle);
+        selectedUpdateImg(rs.getBigDecimal(1).intValue(),ordImage);
+        dbConn.getConn().setAutoCommit(previousAutoCommit);
+        showImg();
+    }
+
+    public void rotateImgRight(ActionEvent event) throws SQLException, IOException {
+        rotateImg(90);
+    }
+
+    public void rotateImgLeft(ActionEvent event) throws SQLException, IOException {
+        rotateImg(-90);
     }
 
     public void prevA() throws IOException, SQLException {
