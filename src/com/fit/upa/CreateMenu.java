@@ -19,6 +19,9 @@ import javafx.scene.control.TextField;
 import oracle.jdbc.driver.DBConversion;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CreateMenu {
@@ -165,9 +168,9 @@ public class CreateMenu {
 
 
     private int elemTypeToShapeType(String type){
-        if(type.equals("Electric-mast") || type.equals("Gas-mast")){
+        if(type.equals("electric-mast") || type.equals("gas-mast")){
             return 2001;
-        }else if (type.equals("Electric-net") || type.equals("Gas-pipeline")){
+        }else if (type.equals("electric-net") || type.equals("gas-pipeline")){
             return 2002;
         }else{
             return 2003;
@@ -190,21 +193,27 @@ public class CreateMenu {
     }
 
     public void onSave(ActionEvent actionEvent) {
+        String name = elementName.getText().toLowerCase();
+        String elemType = elementType.getValue().toString().toLowerCase();
+
         if(listOfPoints.isEmpty()){
             return;
         }
 
-        if (elemTypeToShapeType(elementType.getValue().toString()) != 2001) {
-            String insert = createElem(elementName.getText(), elementType.getValue().toString(), elemTypeToShapeType(elementType.getValue().toString()));
+        if (elemTypeToShapeType(elemType) != 2001) {
+            String insert = createElem(name, elemType, elemTypeToShapeType(elemType));
             if(!insert.isEmpty()){
                 connect.connect();
                 connect.insert(insert);
             }
         }
 
-        if (elemTypeToShapeType(elementType.getValue().toString()) == 2001){
-            System.out.println(createArea(elemTypeToShapeType(elementType.getValue().toString()),elementName.getText(),elementType.getValue().toString()));
+        if (elemTypeToShapeType(elemType) == 2001){
+            System.out.println(createArea(elemTypeToShapeType(elemType),name ,elemType));
         }
+
+        // In object
+        connect.checkCoverageElement(elemType,name,true);
 
         ArrayList<ObjectsInDB> arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m");
         Shapes shapes = new Shapes(arrayList, group);
