@@ -110,7 +110,10 @@ public class Shapes{
             }
             super.getPoints().addAll(this.ordinates);
             root.getChildren().add(poly);
-            if(this.objType.equals("land")){
+
+            System.out.println(this.objType);
+
+            if(this.objType.equals("build")){
                 setFill(Color.DARKGOLDENROD.deriveColor(1,1,1,1));
                 setStroke(Color.BROWN);
             }
@@ -193,7 +196,14 @@ public class Shapes{
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if (!CreateMenu.instance.active){
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
+                        }
+                    }
+
+                    if (active){
                         if(!shapeSelected){
                             try {
                                 MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("polyInfo.fxml")));
@@ -399,7 +409,14 @@ public class Shapes{
             g.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if (!CreateMenu.instance.active){
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
+                        }
+                    }
+
+                    if (active){
                         if(!shapeSelected){
                             try {
                                 MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));

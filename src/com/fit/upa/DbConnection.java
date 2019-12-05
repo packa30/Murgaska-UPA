@@ -22,7 +22,7 @@ public class DbConnection {
     public void connect() {
         if(!connected) {
             try {
-                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xgrofc00", "m2jCm39y");
+                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xkrajc17", "aYh3FOPk");
                 connected = true;
             } catch (SQLException e) {
                 connected = false;
@@ -98,6 +98,26 @@ public class DbConnection {
             e.printStackTrace();
         }
     }
+
+    public boolean checkCoverageElement(String type, String name, boolean isCreate ){
+        String select = "select a.name, b.name from map a, map b where (a.type = '"+ type +"') and (b.type = '"+ type + "') and (a.name <> b.name) AND " +
+                "(SDO_RELATE(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')";
+
+        System.out.println(select);
+        try (PreparedStatement find = conn.prepareStatement(select)) {
+            try (ResultSet resultSet = find.executeQuery()) {
+                if (resultSet.next()) {
+                    if(isCreate)
+                        delete(name);
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public void update(Double[] ordinates, String name, int[] elemInfo ){
         double[] dbOrdinates = changeToDbOrdinates(ordinates);
