@@ -135,7 +135,7 @@ public class Shapes{
     }
 
     public void orderObject(){
-        String[] order = {"land","road","build"};
+        String[] order = {"land","road","build","electric-area","gas-area","electric-net","gas-pipeline","electric-mast","gas-mast"};
         for(String obType: order){
             for(Poly p: polys){
                 if(p.objType.equals(obType)){
@@ -145,6 +145,21 @@ public class Shapes{
             for(Rec r: recs){
                 if(r.objType.equals(obType)){
                     r.root.toFront();
+                }
+            }
+            for(Circ c: circs){
+                if(c.objType.equals(obType)){
+                    c.root.toFront();
+                }
+            }
+            for(Polyl pl: polyls){
+                if(pl.objType.equals(obType)){
+                    pl.root.toFront();
+                }
+            }
+            for(Point ps: points){
+                if(ps.objType.equals(obType)){
+                    ps.root.toFront();
                 }
             }
         }
@@ -184,8 +199,13 @@ public class Shapes{
             super.setCenterX(ordinates[0]);
             super.setCenterY(ordinates[1]);
             super.setRadius(10);
-            setFill(Color.GREEN);
-            setStroke(Color.DARKGREEN);
+            if(this.objType.equals("electric-mast")){
+                setFill(Color.RED.deriveColor(1,1,1,1));
+                setStroke(Color.DARKRED);
+            } else if(this.objType.equals("gas-mast")){
+                setFill(Color.YELLOWGREEN.deriveColor(1,1,1,1));
+                setStroke(Color.YELLOW);
+            }
             pointc.getChildren().add(circCenter);
 
 
@@ -376,8 +396,13 @@ public class Shapes{
 
             super.getPoints().setAll(this.ordinates);
 
-            //setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
-            setStroke(Color.BLACK);
+            if(this.objType.equals("electric-net")){
+                setStroke(Color.DARKRED);
+
+            } else if(this.objType.equals("gas-pipeline")){
+                setStroke(Color.YELLOW);
+
+            }
             setStrokeWidth(3);
 
             root.getChildren().add(polylc);
@@ -595,12 +620,12 @@ public class Shapes{
             super.setRadius(resultCircle[2]);
 
             if(this.objType.equals("electric-area")){
-                setFill(Color.RED.deriveColor(1,1,1,1));
+                setFill(Color.INDIANRED.deriveColor(1,1,1,1));
                 setStroke(Color.DARKRED);
             }
-            else{
-                setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
-                setStroke(Color.GRAY);
+            else if(this.objType.equals("gas-area")){
+                setFill(Color.LIGHTGOLDENRODYELLOW.deriveColor(1,1,1,1));
+                setStroke(Color.YELLOW);
             }
             System.out.println(Arrays.toString(this.ordinates));
             root.getChildren().add(circ);
@@ -888,11 +913,15 @@ public class Shapes{
 
             System.out.println(this.objType);
 
-            if(this.objType.equals("build")){
+            if(this.objType.equals("land")){
                 setFill(Color.DARKGOLDENROD.deriveColor(1,1,1,1));
                 setStroke(Color.BROWN);
             }
-            else{
+            else if(this.objType.equals("build")){
+                setFill(Color.STEELBLUE.deriveColor(1,1,1,1));
+                setStroke(Color.BLUE);
+            }
+            else {
                 setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
                 setStroke(Color.GRAY);
             }
