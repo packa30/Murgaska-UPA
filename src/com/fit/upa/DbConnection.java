@@ -53,7 +53,6 @@ public class DbConnection {
         else {
             try (Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery(query);
-
                 while (rs.next()) {
                     String name = rs.getString(1);
                     String objType = rs.getString(2);
@@ -64,19 +63,33 @@ public class DbConnection {
                     double[] ordinates = jGeometry.getOrdinatesArray();
                     int[] eleminfo = jGeometry.getElemInfo();
                     int type = jGeometry.getType();
+                    double[] point = jGeometry.getPoint();
 
-                    double[] viewOrdinates = changeToAppOrdinates(ordinates);
 
-                    System.out.println(eleminfo[2]+" , " +type);
+
+                    System.out.println(" , " +type);
                     //TODO pre dalsie objekty
-                    if (eleminfo[2] == 3) {
-                        arrayList.add(new ObjectsInDB(type ,objType,name, viewOrdinates, eleminfo));
-                    } else if (eleminfo[2] == 1 && type == 3) {
-                        arrayList.add(new ObjectsInDB(type ,objType,name, viewOrdinates, eleminfo));
-                    } else if (eleminfo[2] == 4) {
-                        arrayList.add(new ObjectsInDB(type, objType,name, viewOrdinates, eleminfo));
-                    }else if (eleminfo[2] == 1 && type == 2) {
-                        arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                    if(type == 1){
+                        System.out.println(">>"+Arrays.toString(point));
+                        int[] elemtype = {type,0,0};
+                        double[] viewOrdinates = changeToAppOrdinates(point);
+                        arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, elemtype));
+                    }
+                    else {
+                        if (eleminfo[2] == 3) {
+                            double[] viewOrdinates = changeToAppOrdinates(ordinates);
+                            arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                            System.out.println(">>"+type +" " + objType +" " + name +" " + Arrays.toString(viewOrdinates) +" " + Arrays.toString(eleminfo));
+                        } else if (eleminfo[2] == 1 && type == 3) {
+                            double[] viewOrdinates = changeToAppOrdinates(ordinates);
+                            arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                        } else if (eleminfo[2] == 4) {
+                            double[] viewOrdinates = changeToAppOrdinates(ordinates);
+                            arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                        } else if (eleminfo[2] == 1 && type == 2) {
+                            double[] viewOrdinates = changeToAppOrdinates(ordinates);
+                            arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                        }
                     }
                 }
             } catch (SQLException ex) {
@@ -134,6 +147,11 @@ public class DbConnection {
         }
         else if(type == 2){
             sql = "update map set geometry = SDO_GEOMETRY(2002, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(dbOrdinates)+") where name = '" + name + "'";
+            System.out.println(sql);
+        }
+        else if(type == 1){
+            String point = arrayToString2(dbOrdinates);
+            sql = "update map set geometry = SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE"+point+",NULL),NULL,NULL) where name = '" + name + "'";
             System.out.println(sql);
         }
 
@@ -203,6 +221,15 @@ public class DbConnection {
         }
         str = str.substring(0, str.length() - 1);
         str += ")";
+        return str;
+    }
+
+    public String arrayToString2(double[] array){
+        String str = "(";
+        for(double i: array){
+            str += i+",";
+        }
+        str = str.substring(0, str.length() - 1);
         return str;
     }
 

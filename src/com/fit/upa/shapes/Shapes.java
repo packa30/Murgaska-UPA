@@ -25,6 +25,8 @@ public class Shapes{
     ArrayList<Rec> recs = new ArrayList<Rec>(); //zoznam objektov typu obdlznik
     ArrayList<Circ> circs = new ArrayList<Circ>();
     ArrayList<Polyl> polyls = new ArrayList<Polyl>();
+    ArrayList<Point> points = new ArrayList<Point>();
+
     DbConnection dbConn = DbConnection.getInstance();
     public Shapes(ArrayList<ObjectsInDB> arrayList, Group g){
         root = g;
@@ -58,6 +60,13 @@ public class Shapes{
                 polyls.add(new Polyl(elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
                 Polyl p = polyls.get(polyls.size()-1);
                 plG.getChildren().add(p);
+            }
+            else if(elem.type == 1){
+                Group pG = new Group();
+                g.getChildren().add(pG);
+                points.add(new Point(elem.ordinates, elem.name, elem.objType, elem.eleminfo, pG));
+                Point po = points.get(points.size()-1);
+                pG.getChildren().add(po);
             }
         }
         orderObject();
@@ -111,6 +120,18 @@ public class Shapes{
             dbConn.delete(polyls.get(i).name);
             polyls.remove(i);
         }
+        i = 0;
+        for(Point p: points){
+            if(p.name.equals(name)){
+                break;
+            }
+            i++;
+        }
+        if(i < points.size()){
+            System.out.println(points.get(i).name);
+            dbConn.delete(points.get(i).name);
+            points.remove(i);
+        }
     }
 
     public void orderObject(){
@@ -128,6 +149,192 @@ public class Shapes{
             }
         }
 
+    }
+
+    public class Point extends Circle{
+        public boolean enableEdit = false;
+        public Circle cs;
+
+        public Double[] ordinates;
+        public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
+        public TextField[] tfOrdinates;
+
+        public String name;
+        public String objType;
+        public int[] elemInfo;
+        public Group pointc = new Group();
+        public Group root;
+
+        public Point(double[] ordinates, String name, String objType,int[] elemInfo, Group g) {
+            this.name = name;
+            this.objType = objType;
+            this.elemInfo = elemInfo;
+            this.root = g;
+
+            this.ordinates = new Double[2];
+            for(int i = 0; i < 2; i++){
+                this.ordinates[i] = ordinates[i];
+            }
+            System.out.println(">>"+Arrays.toString(ordinates));
+            this.tfOrdinates = new TextField[2];
+            Circle circCenter = new Circle(ordinates[0], ordinates[1],0);
+            this.cs = circCenter;
+            cs.setFill(Color.TOMATO.deriveColor(1,1,1,0.5));
+            cs.setStroke(Color.TOMATO);
+            super.setCenterX(ordinates[0]);
+            super.setCenterY(ordinates[1]);
+            super.setRadius(10);
+            setFill(Color.GREEN);
+            setStroke(Color.DARKGREEN);
+            pointc.getChildren().add(circCenter);
+
+
+            root.getChildren().add(pointc);
+            enableDrag(root, this);
+        }
+
+        public void updateCoords(){
+                cs.setCenterX(ordinates[0]);
+                cs.setCenterY(ordinates[1]);
+
+            Point.super.setCenterX(ordinates[0]);
+            Point.super.setCenterY(ordinates[1]);
+        }
+
+        public void updateCoordFromTextField(){
+            for(int i=0; i<ordinates.length; i++){
+                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText())*3.8;
+            }
+            updateCoords();
+        }
+
+
+
+        public void discardChanges(){
+            if(!ordinatesHistory.isEmpty()) {
+                ordinates = ordinatesHistory.get(0);
+                ordinatesHistory.clear();
+                updateCoords();
+            }
+        }
+
+        public void applyChanges(){
+            ordinatesHistory.clear();
+            applyUpdate();
+        }
+        public void applyUpdate(){
+            Shapes.this.dbConn.update(1, ordinates,name, elemInfo);
+        }
+
+        public void setEnableEdit(boolean state){
+            enableEdit = state;
+            shapeSelected = state;
+            if(state){
+                root.toFront();
+                pointc.toFront();
+                    cs.setRadius(10);
+                    cs.toFront();
+
+            }else {
+                    cs.setRadius(0);
+                }
+
+        }
+
+        public void orderObjects(){
+            Shapes.this.orderObject();
+        }
+        public void delete(){
+            Shapes.this.deleteObj(this.name);
+            Shapes.this.root.getChildren().remove(this.root);
+        }
+
+        private void enableDrag(Group g, com.fit.upa.shapes.Shapes.Point owner) {
+            final Delta dragDelta = new Delta();
+            g.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.println(name);
+                }
+            });
+            g.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
+                        }
+                    }
+
+                    if (active){
+                        if(!shapeSelected){
+                            try {
+                                MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("PointInfo.fxml")));
+                                PointInfo.getInstance().setOwner(owner);
+                                PointInfo.getInstance().setName(name);
+
+                                if(objType.equals("build")){
+                                    PointInfo.getInstance().imageButton.setVisible(true);
+                                }
+
+                                if(owner.enableEdit){
+                                    PointInfo.getInstance().setSelect();
+                                }
+
+
+                                    tfOrdinates[0] = new TextField(String.valueOf(ordinates[0]/3.8));
+                                    tfOrdinates[1] = new TextField(String.valueOf(ordinates[1]/3.8));
+                                    PointInfo.getInstance().getGPane().addRow(0, new Label("point 0"), tfOrdinates[0], tfOrdinates[1]);
+
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            if(mouseEvent.getTarget() instanceof Circle){
+                                dragDelta.x = mouseEvent.getX();
+                                dragDelta.y = mouseEvent.getY();/*
+                            startPoints.x1 = cs[0].getCenterX();
+                            startPoints.x2 = cs[1].getCenterX();
+                            startPoints.y1 = cs[0].getCenterY();
+                            startPoints.y2 = cs[1].getCenterY();*/
+                                ordinatesHistory.add(ordinates.clone());/*
+                            System.out.println("sp: "+ startPoints.x1 + startPoints.y1 + startPoints.x2 + startPoints.y2);
+                            System.out.println("oh: "+Arrays.toString(ordinates));*/
+                            }
+                        }
+                    }
+
+                }
+            });
+            g.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(shapeSelected) {
+                        if (mouseEvent.getTarget() instanceof Circle) {
+                            double deltaX = mouseEvent.getX() - dragDelta.x;
+                            double deltaY = mouseEvent.getY() - dragDelta.y;
+
+
+                                double newX = ordinatesHistory.get(ordinatesHistory.size()-1)[0] +deltaX;
+                                double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[1] + deltaY;
+                                cs.setCenterX(newX); //TODO nacitat len raz
+                                ordinates[0] = newX;
+                                tfOrdinates[0].setText(String.valueOf(newX/3.8));
+                                cs.setCenterY(newY);
+                                ordinates[1] = newY;
+                                tfOrdinates[1].setText(String.valueOf(newY/3.8));
+
+                            Point.super.setCenterX(ordinates[0]);
+                            Point.super.setCenterY(ordinates[1]);
+                        }
+
+                    }
+                }
+            });
+        }
     }
 
     public class Polyl extends Polyline{
