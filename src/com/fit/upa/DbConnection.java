@@ -63,16 +63,20 @@ public class DbConnection {
                     //System.out.println(jGeometry.toStringFull());
                     double[] ordinates = jGeometry.getOrdinatesArray();
                     int[] eleminfo = jGeometry.getElemInfo();
+                    int type = jGeometry.getType();
 
                     double[] viewOrdinates = changeToAppOrdinates(ordinates);
 
+                    System.out.println(eleminfo[2]+" , " +type);
                     //TODO pre dalsie objekty
                     if (eleminfo[2] == 3) {
-                        arrayList.add(new ObjectsInDB(3,objType,name, viewOrdinates, eleminfo));
-                    } else if (eleminfo[2] == 1) {
-                        arrayList.add(new ObjectsInDB(1,objType,name, viewOrdinates, eleminfo));
+                        arrayList.add(new ObjectsInDB(type ,objType,name, viewOrdinates, eleminfo));
+                    } else if (eleminfo[2] == 1 && type == 3) {
+                        arrayList.add(new ObjectsInDB(type ,objType,name, viewOrdinates, eleminfo));
                     } else if (eleminfo[2] == 4) {
-                        arrayList.add(new ObjectsInDB(4,objType,name, viewOrdinates, eleminfo));
+                        arrayList.add(new ObjectsInDB(type, objType,name, viewOrdinates, eleminfo));
+                    }else if (eleminfo[2] == 1 && type == 2) {
+                        arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
                     }
                 }
             } catch (SQLException ex) {
@@ -121,13 +125,17 @@ public class DbConnection {
     }
 
 
-    public void update(Double[] ordinates, String name, int[] elemInfo ){
+    public void update(int type, Double[] ordinates, String name, int[] elemInfo ){
         double[] dbOrdinates = changeToDbOrdinates(ordinates);
-        String sql;
-        //if(elemInfo[2] == 3){ //jedna sa o obdlznik
+        String sql = "";
+        if(type == 3){ //jedna sa o obdlznik
             sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(dbOrdinates)+") where name = '" + name + "'";
             System.out.println(sql);
-        //}
+        }
+        else if(type == 2){
+            sql = "update map set geometry = SDO_GEOMETRY(2002, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(dbOrdinates)+") where name = '" + name + "'";
+            System.out.println(sql);
+        }
 
         Statement stmt = null;
         try {

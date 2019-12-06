@@ -24,30 +24,40 @@ public class Shapes{
     ArrayList<Poly> polys = new ArrayList<Poly>(); //zoznam objektov typu polygono
     ArrayList<Rec> recs = new ArrayList<Rec>(); //zoznam objektov typu obdlznik
     ArrayList<Circ> circs = new ArrayList<Circ>();
+    ArrayList<Polyl> polyls = new ArrayList<Polyl>();
     DbConnection dbConn = DbConnection.getInstance();
     public Shapes(ArrayList<ObjectsInDB> arrayList, Group g){
         root = g;
         for(ObjectsInDB elem : arrayList) {
-            if(elem.type == 3){
+            //System.out.println(elem.eleminfo[2]+" , " +elem.type);
+            if(elem.eleminfo[2] == 3){
                 Group rG = new Group();
                 g.getChildren().add(rG);
                 recs.add(new Rec(elem.ordinates, elem.name, elem.objType,elem.eleminfo, rG));
                 Rec r = recs.get(recs.size() - 1);
                 rG.getChildren().add(r);
             }
-            else if(elem.type == 1){
+            else if(elem.eleminfo[2] == 1 && elem.type == 3){
                 Group pG = new Group();
                 g.getChildren().add(pG);
                 polys.add(new Poly(elem.ordinates, elem.name, elem.objType,elem.eleminfo, pG));
                 Poly p = polys.get(polys.size() - 1);
                 pG.getChildren().add(p);
             }
-            else if(elem.type == 4){
+            else if(elem.eleminfo[2] == 4){
                 Group cG = new Group();
                 g.getChildren().add(cG);
                 circs.add(new Circ(elem.ordinates, elem.name, elem.objType,elem.eleminfo, cG));
                 Circ c = circs.get(circs.size()-1);
                 cG.getChildren().add(c);
+            }
+            else if(elem.eleminfo[2] == 1 && elem.type == 2){
+                System.out.println("mame zlozenu priamku");
+                Group plG = new Group();
+                g.getChildren().add(plG);
+                polyls.add(new Polyl(elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
+                Polyl p = polyls.get(polyls.size()-1);
+                plG.getChildren().add(p);
             }
         }
         orderObject();
@@ -89,6 +99,18 @@ public class Shapes{
             dbConn.delete(polys.get(i).name);
             polys.remove(i);
         }
+        i = 0;
+        for(Polyl p: polyls){
+            if(p.name.equals(name)){
+                break;
+            }
+            i++;
+        }
+        if(i < polyls.size()){
+            System.out.println(polyls.get(i).name);
+            dbConn.delete(polyls.get(i).name);
+            polyls.remove(i);
+        }
     }
 
     public void orderObject(){
@@ -104,6 +126,222 @@ public class Shapes{
                     r.root.toFront();
                 }
             }
+        }
+
+    }
+
+    public class Polyl extends Polyline{
+        public boolean enableEdit = false;
+        public Circle[] cs;
+
+        public Double[] ordinates;
+        public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
+        public TextField[] tfOrdinates;
+
+        public String name;
+        public String objType;
+        public int[] elemInfo;
+        public Group polylc = new Group();
+        public Group root;
+
+        public Polyl(double[] ordinates, String name, String objType,int[] elemInfo, Group g){
+            this.name = name;
+            this.objType = objType;
+            this.elemInfo = elemInfo;
+            this.root = g;
+
+            int pointsCount = ordinates.length/2;
+            this.ordinates = new Double[pointsCount*2];
+            System.out.println(">>"+Arrays.toString(ordinates));
+            this.tfOrdinates = new TextField[pointsCount*2];
+            Circle[] circCorners = new Circle[pointsCount];
+            for(int i=0; i<pointsCount; i++){
+                this.ordinates[2*i] = ordinates[2*i];
+                this.ordinates[2*i+1] = ordinates[2*i+1];
+                circCorners[i] = new Circle(ordinates[2*i], ordinates[2*i+1], 0);
+            }
+            this.cs = circCorners;
+            for(Circle c: circCorners){
+                c.setFill(Color.TOMATO.deriveColor(1,1,1,0.5));
+                c.setStroke(Color.TOMATO);
+                polylc.getChildren().add(c);
+            }
+
+            super.getPoints().setAll(this.ordinates);
+
+            //setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
+            setStroke(Color.BLACK);
+            setStrokeWidth(3);
+
+            root.getChildren().add(polylc);
+            enableDrag(root, this);
+        }
+
+
+        public void updateCoords(){
+            for(int i=0; i<cs.length; i++){
+                cs[i].setCenterX(ordinates[2*i]);
+                cs[i].setCenterY(ordinates[2*i+1]);
+            }
+            Polyl.super.getPoints().setAll(this.ordinates);
+        }
+
+        public void updateCoordFromTextField(){
+            for(int i=0; i<ordinates.length; i++){
+                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText())*3.8;
+            }
+            updateCoords();
+        }
+
+
+
+        public void discardChanges(){
+            if(!ordinatesHistory.isEmpty()) {
+                ordinates = ordinatesHistory.get(0);
+                ordinatesHistory.clear();
+                updateCoords();
+            }
+        }
+
+        public void applyChanges(){
+            ordinatesHistory.clear();
+            applyUpdate();
+        }
+        public void applyUpdate(){
+            Shapes.this.dbConn.update(2, ordinates,name, elemInfo);
+        }
+
+        public void setEnableEdit(boolean state){
+            enableEdit = state;
+            shapeSelected = state;
+            if(state){
+                root.toFront();
+                polylc.toFront();
+                for(Circle c: cs){
+                    c.setRadius(10);
+                    c.toFront();
+                }
+            }else {
+                for(Circle c: cs){
+                    c.setRadius(0);
+                }
+            }
+        }
+
+        public void orderObjects(){
+            Shapes.this.orderObject();
+        }
+        public void delete(){
+            Shapes.this.deleteObj(this.name);
+            Shapes.this.root.getChildren().remove(this.root);
+        }
+
+        private void enableDrag(Group g, com.fit.upa.shapes.Shapes.Polyl owner) {
+            final Delta dragDelta = new Delta();
+            g.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.println(name);
+                }
+            });
+
+            g.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
+                        }
+                    }
+
+                    if (active){
+                        if(!shapeSelected){
+                            try {
+                                MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("PolyLInfo.fxml")));
+                                PolyLInfo.getInstance().setOwner(owner);
+                                PolyLInfo.getInstance().setName(name);
+
+                                if(objType.equals("build")){
+                                    PolyLInfo.getInstance().imageButton.setVisible(true);
+                                }
+
+                                if(owner.enableEdit){
+                                    PolyLInfo.getInstance().setSelect();
+                                }
+
+                                for(int i = 0; i < ordinates.length/2; i++) {
+                                    tfOrdinates[2*i] = new TextField(String.valueOf(ordinates[2*i]/3.8));
+                                    tfOrdinates[2*i+1] = new TextField(String.valueOf(ordinates[2*i+1]/3.8));
+                                    PolyLInfo.getInstance().getGPane().addRow(i, new Label("point "+i), tfOrdinates[i*2], tfOrdinates[i*2+1]);
+                                }
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            if(mouseEvent.getTarget() instanceof Polyl){
+                                dragDelta.x = mouseEvent.getX();
+                                dragDelta.y = mouseEvent.getY();/*
+                            startPoints.x1 = cs[0].getCenterX();
+                            startPoints.x2 = cs[1].getCenterX();
+                            startPoints.y1 = cs[0].getCenterY();
+                            startPoints.y2 = cs[1].getCenterY();*/
+                                ordinatesHistory.add(ordinates.clone());/*
+                            System.out.println("sp: "+ startPoints.x1 + startPoints.y1 + startPoints.x2 + startPoints.y2);
+                            System.out.println("oh: "+Arrays.toString(ordinates));*/
+                            }
+                            else{
+                                dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
+                                dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
+                                ordinatesHistory.add(ordinates.clone());
+                            }
+                        }
+                    }
+
+                }
+            });
+
+            g.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(shapeSelected) {
+                        if (mouseEvent.getTarget() instanceof Polyl) {
+                            double deltaX = mouseEvent.getX() - dragDelta.x;
+                            double deltaY = mouseEvent.getY() - dragDelta.y;
+
+                            for (int i = 0; i < cs.length; i++) {
+                                double newX = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2] +deltaX;
+                                double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2+1] + deltaY;
+                                cs[i].setCenterX(newX); //TODO nacitat len raz
+                                ordinates[i * 2] = newX;
+                                tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                cs[i].setCenterY(newY);
+                                ordinates[i * 2 + 1] = newY;
+                                tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                            }
+                            Polyl.super.getPoints().setAll(ordinates);
+                        }
+                        else {
+                            double newX = mouseEvent.getX() + dragDelta.x;
+                            double newY = mouseEvent.getY() + dragDelta.y;
+                            ((Circle) mouseEvent.getTarget()).setCenterX(newX);
+                            ((Circle) mouseEvent.getTarget()).setCenterY(newY);
+
+                            for (int i = 0; i < cs.length; i++) {
+                                if (mouseEvent.getTarget().equals(cs[i])) {
+                                    ordinates[i * 2] = newX;
+                                    tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                    ordinates[i * 2 + 1] = newY;
+                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                    Polyl.super.getPoints().setAll(ordinates);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
     }
@@ -196,7 +434,7 @@ public class Shapes{
             applyUpdate();
         }
         public void applyUpdate(){
-            Shapes.this.dbConn.update(ordinates,name, elemInfo);
+            Shapes.this.dbConn.update(3, ordinates,name, elemInfo);
         }
 
         public void setEnableEdit(boolean state){
@@ -495,7 +733,7 @@ public class Shapes{
             applyUpdate();
         }
         public void applyUpdate(){
-            Shapes.this.dbConn.update(ordinates,name, elemInfo);
+            Shapes.this.dbConn.update(3, ordinates,name, elemInfo);
         }
 
         public void setEnableEdit(boolean state){
@@ -720,7 +958,7 @@ public class Shapes{
         }
 
         public void applyUpdate(){
-            Shapes.this.dbConn.update(ordinates,name, elemInfo);
+            Shapes.this.dbConn.update(3, ordinates,name, elemInfo);
         }
 
         public void setEnableEdit(boolean state){
