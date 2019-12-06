@@ -1,7 +1,7 @@
 package com.fit.upa.shapes;
 
-//import com.fit.upa.shapes.Poly;
 import com.fit.upa.MultiOBJ;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -9,15 +9,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.event.ActionEvent;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class PolyInfo {
-    public Shapes.Poly owner;
+public class CircInfo {
+    public Shapes.Circ owner;
     @FXML
     public Text name;
 
@@ -30,20 +28,20 @@ public class PolyInfo {
     @FXML
     public Button imageButton;
 
-    public static PolyInfo instance;
-    public PolyInfo(){
+    public static CircInfo instance;
+    public CircInfo(){
         instance = this;
     }
-    public static PolyInfo getInstance(){
+    public static CircInfo getInstance(){
         return instance;
     }
 
-    public void setOwner(Shapes.Poly p){
-        owner = p;
+    public void setOwner(Shapes.Circ r){
+        owner = r;
     }
 
     public void initialize(){
-        imageButton.setVisible(false);
+        imageButton.setVisible(false); //nezobrazi button pre obrazky
         name.setText("hello");
     }
 
@@ -54,6 +52,7 @@ public class PolyInfo {
     public GridPane getGPane(){
         return gpane;
     }
+
 
     @FXML
     public void onClick(ActionEvent event) throws IOException {
@@ -66,12 +65,11 @@ public class PolyInfo {
         //pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
     }
 
-
     @FXML
     public CheckBox ch1;
 
     @FXML
-    public void check(){//ActionEvent event) throws IOException {
+    public void check(ActionEvent event) throws IOException {
         if(ch1.isSelected()){
             owner.setEnableEdit(true);
         }
@@ -87,8 +85,6 @@ public class PolyInfo {
         if(ch1.isSelected()){
             owner.updateCoordFromTextField();
             owner.applyChanges();
-            ch1.setSelected(false);
-            check();
         }
 
     }
@@ -104,7 +100,6 @@ public class PolyInfo {
             pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../mainMenu.fxml")));
         }
     }
-
 
     public void setSelect(){
         ch1.setSelected(true);

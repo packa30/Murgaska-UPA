@@ -22,7 +22,7 @@ public class DbConnection {
     public void connect() {
         if(!connected) {
             try {
-                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xkrajc17", "aYh3FOPk");
+                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xnocia00", "eWHhifOx");
                 connected = true;
             } catch (SQLException e) {
                 connected = false;
@@ -71,6 +71,8 @@ public class DbConnection {
                         arrayList.add(new ObjectsInDB(3,objType,name, viewOrdinates, eleminfo));
                     } else if (eleminfo[2] == 1) {
                         arrayList.add(new ObjectsInDB(1,objType,name, viewOrdinates, eleminfo));
+                    } else if (eleminfo[2] == 4) {
+                        arrayList.add(new ObjectsInDB(4,objType,name, viewOrdinates, eleminfo));
                     }
                 }
             } catch (SQLException ex) {

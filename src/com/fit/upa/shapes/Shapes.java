@@ -23,6 +23,7 @@ public class Shapes{
     Group root;
     ArrayList<Poly> polys = new ArrayList<Poly>(); //zoznam objektov typu polygono
     ArrayList<Rec> recs = new ArrayList<Rec>(); //zoznam objektov typu obdlznik
+    ArrayList<Circ> circs = new ArrayList<Circ>();
     DbConnection dbConn = DbConnection.getInstance();
     public Shapes(ArrayList<ObjectsInDB> arrayList, Group g){
         root = g;
@@ -41,6 +42,13 @@ public class Shapes{
                 Poly p = polys.get(polys.size() - 1);
                 pG.getChildren().add(p);
             }
+            else if(elem.type == 4){
+                Group cG = new Group();
+                g.getChildren().add(cG);
+                circs.add(new Circ(elem.ordinates, elem.name, elem.objType,elem.eleminfo, cG));
+                Circ c = circs.get(circs.size()-1);
+                cG.getChildren().add(c);
+            }
         }
         orderObject();
     }
@@ -56,6 +64,30 @@ public class Shapes{
             System.out.println(recs.get(i).name);
             dbConn.delete(recs.get(i).name);
             recs.remove(i);
+        }
+        i = 0;
+        for(Circ c: circs){
+            if(c.name.equals(name)){
+                break;
+            }
+            i++;
+        }
+        if(i < circs.size()){
+            System.out.println(circs.get(i).name);
+            dbConn.delete(circs.get(i).name);
+            circs.remove(i);
+        }
+        i = 0;
+        for(Poly p: polys){
+            if(p.name.equals(name)){
+                break;
+            }
+            i++;
+        }
+        if(i < polys.size()){
+            System.out.println(polys.get(i).name);
+            dbConn.delete(polys.get(i).name);
+            polys.remove(i);
         }
     }
 
@@ -75,6 +107,304 @@ public class Shapes{
         }
 
     }
+
+    public class Circ extends Circle {
+        public boolean enableEdit = false;
+        public Circle[] cs;
+
+        public Double[] ordinates;
+        public ArrayList<Double[]> ordinatesHistory = new ArrayList<Double[]>();
+        public TextField[] tfOrdinates;
+
+        public String name;
+        public String objType;
+        public int[] elemInfo;
+        public Group circ = new Group();
+        public Group root;
+
+        public Circ(double[] ordinates, String name, String objType,int[] elemInfo, Group g){
+            this.name = name;
+            this.objType = objType;
+            this.elemInfo = elemInfo;
+            this.root = g;
+
+            System.out.println(Arrays.toString(ordinates));
+            int pointsCount = ordinates.length/2;
+            this.ordinates = new Double[pointsCount*2];
+            this.tfOrdinates = new TextField[pointsCount*2];
+            Circle[] circCorners = new Circle[pointsCount];
+            for(int i=0; i<pointsCount; i++){
+                this.ordinates[2*i] = ordinates[2*i];
+                this.ordinates[2*i+1] = ordinates[2*i+1];
+                circCorners[i] = new Circle(ordinates[2*i], ordinates[2*i+1], 0);
+            }
+            this.cs = circCorners;
+            for(Circle c: circCorners){
+                c.setFill(Color.TOMATO.deriveColor(1,1,1,0.5));
+                c.setStroke(Color.TOMATO);
+                circ.getChildren().add(c);
+            }
+            double[] resultCircle = findCircle(cs);
+            super.setCenterX(resultCircle[0]);
+            super.setCenterY(resultCircle[1]);
+            super.setRadius(resultCircle[2]);
+
+            if(this.objType.equals("electric-area")){
+                setFill(Color.RED.deriveColor(1,1,1,1));
+                setStroke(Color.DARKRED);
+            }
+            else{
+                setFill(Color.DARKGRAY.deriveColor(1,1,1,1));
+                setStroke(Color.GRAY);
+            }
+            System.out.println(Arrays.toString(this.ordinates));
+            root.getChildren().add(circ);
+            enableDrag(root, this);
+        }
+
+
+        public void updateCoords(){
+            for(int i=0; i<cs.length; i++){
+                cs[i].setCenterX(ordinates[2*i]);
+                cs[i].setCenterY(ordinates[2*i+1]);
+            }
+            double[] resultCircle = findCircle(cs);
+            Circ.super.setCenterX(resultCircle[0]);
+            Circ.super.setCenterY(resultCircle[1]);
+            Circ.super.setRadius(resultCircle[2]);
+        }
+
+        public void updateCoordFromTextField(){
+            for(int i=0; i<ordinates.length; i++){
+                ordinates[i] = Double.parseDouble(tfOrdinates[i].getText())*3.8;
+            }
+            updateCoords();
+        }
+
+
+
+        public void discardChanges(){
+            if(!ordinatesHistory.isEmpty()) {
+                ordinates = ordinatesHistory.get(0);
+                ordinatesHistory.clear();
+                updateCoords();
+            }
+        }
+
+        public void applyChanges(){
+            ordinatesHistory.clear();
+            applyUpdate();
+        }
+        public void applyUpdate(){
+            Shapes.this.dbConn.update(ordinates,name, elemInfo);
+        }
+
+        public void setEnableEdit(boolean state){
+            enableEdit = state;
+            shapeSelected = state;
+            if(state){
+                root.toFront();
+                circ.toFront();
+                for(Circle c: cs){
+                    c.setRadius(10);
+                    c.toFront();
+                }
+            }else {
+                for(Circle c: cs){
+                    c.setRadius(0);
+                }
+            }
+        }
+
+        public void orderObjects(){
+            Shapes.this.orderObject();
+        }
+        public void delete(){
+            Shapes.this.deleteObj(this.name);
+            Shapes.this.root.getChildren().remove(this.root);
+        }
+
+        private void enableDrag(Group g, com.fit.upa.shapes.Shapes.Circ owner) {
+            final Delta dragDelta = new Delta();
+            g.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.println(name);
+                }
+            });
+
+            g.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    boolean active = true;
+                    if(CreateMenu.instance != null){
+                        if (CreateMenu.instance.active){
+                            active = false;
+                        }
+                    }
+
+                    if (active){
+                        if(!shapeSelected){
+                            try {
+                                MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("circInfo.fxml")));
+                                CircInfo.getInstance().setOwner(owner);
+                                CircInfo.getInstance().setName(name);
+
+                                if(objType.equals("build")){
+                                    CircInfo.getInstance().imageButton.setVisible(true);
+                                }
+
+                                if(owner.enableEdit){
+                                    CircInfo.getInstance().setSelect();
+                                }
+
+                                for(int i = 0; i < ordinates.length/2; i++) {
+                                    tfOrdinates[2*i] = new TextField(String.valueOf(ordinates[2*i]/3.8));
+                                    tfOrdinates[2*i+1] = new TextField(String.valueOf(ordinates[2*i+1]/3.8));
+                                    CircInfo.getInstance().getGPane().addRow(i, new Label("point "+i), tfOrdinates[i*2], tfOrdinates[i*2+1]);
+                                }
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else {
+                            if(mouseEvent.getTarget() instanceof Circ){
+                                dragDelta.x = mouseEvent.getX();
+                                dragDelta.y = mouseEvent.getY();/*
+                            startPoints.x1 = cs[0].getCenterX();
+                            startPoints.x2 = cs[1].getCenterX();
+                            startPoints.y1 = cs[0].getCenterY();
+                            startPoints.y2 = cs[1].getCenterY();*/
+                                ordinatesHistory.add(ordinates.clone());/*
+                            System.out.println("sp: "+ startPoints.x1 + startPoints.y1 + startPoints.x2 + startPoints.y2);
+                            System.out.println("oh: "+Arrays.toString(ordinates));*/
+                            }
+                            else{
+                                dragDelta.x = ((Circle) mouseEvent.getTarget()).getCenterX()-mouseEvent.getX();
+                                dragDelta.y = ((Circle) mouseEvent.getTarget()).getCenterY()-mouseEvent.getY();
+                                ordinatesHistory.add(ordinates.clone());
+                            }
+                        }
+                    }
+
+                }
+            });
+
+            g.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(shapeSelected) {
+                         if (mouseEvent.getTarget() instanceof Circ) {
+                            double deltaX = mouseEvent.getX() - dragDelta.x;
+                            double deltaY = mouseEvent.getY() - dragDelta.y;
+
+                            for (int i = 0; i < cs.length; i++) {
+                                double newX = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2] +deltaX;
+                                double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2+1] + deltaY;
+                                cs[i].setCenterX(newX); //TODO nacitat len raz
+                                ordinates[i * 2] = newX;
+                                tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                cs[i].setCenterY(newY);
+                                ordinates[i * 2 + 1] = newY;
+                                tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                            }
+                             double[] resultCircle = findCircle(cs);
+                             Circ.super.setCenterX(resultCircle[0]);
+                             Circ.super.setCenterY(resultCircle[1]);
+                             Circ.super.setRadius(resultCircle[2]);
+                        }
+                        else {
+                            double newX = mouseEvent.getX() + dragDelta.x;
+                            double newY = mouseEvent.getY() + dragDelta.y;
+                            ((Circle) mouseEvent.getTarget()).setCenterX(newX);
+                            ((Circle) mouseEvent.getTarget()).setCenterY(newY);
+
+                            for (int i = 0; i < cs.length; i++) {
+                                if (mouseEvent.getTarget().equals(cs[i])) {
+                                    ordinates[i * 2] = newX;
+                                    tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                    ordinates[i * 2 + 1] = newY;
+                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                    double[] resultCircle = findCircle(cs);
+                                    Circ.super.setCenterX(resultCircle[0]);
+                                    Circ.super.setCenterY(resultCircle[1]);
+                                    Circ.super.setRadius(resultCircle[2]);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+
+        }
+
+        private double[] findCircle(Circle[] c){
+            double x1 = c[0].getCenterX();
+            double x2 = c[1].getCenterX();
+            double x3 = c[2].getCenterX();
+            double y1 = c[0].getCenterY();
+            double y2 = c[1].getCenterY();
+            double y3 = c[2].getCenterY();
+
+            double x12 = x1 - x2;
+            double x13 = x1 - x3;
+
+            double y12 = y1 - y2;
+            double y13 = y1 - y3;
+
+            double y31 = y3 - y1;
+            double y21 = y2 - y1;
+
+            double x31 = x3 - x1;
+            double x21 = x2 - x1;
+
+            // x1^2 - x3^2
+            double sx13 = (Math.pow(x1, 2) -
+                    Math.pow(x3, 2));
+
+            // y1^2 - y3^2
+            double sy13 = (Math.pow(y1, 2) -
+                    Math.pow(y3, 2));
+
+            double sx21 = (Math.pow(x2, 2) -
+                    Math.pow(x1, 2));
+
+            double sy21 = (Math.pow(y2, 2) -
+                    Math.pow(y1, 2));
+
+            double f = ((sx13) * (x12)
+                    + (sy13) * (x12)
+                    + (sx21) * (x13)
+                    + (sy21) * (x13))
+                    / (2 * ((y31) * (x12) - (y21) * (x13)));
+            double g = ((sx13) * (y12)
+                    + (sy13) * (y12)
+                    + (sx21) * (y13)
+                    + (sy21) * (y13))
+                    / (2 * ((x31) * (y12) - (x21) * (y13)));
+
+            double cc = -Math.pow(x1, 2) - Math.pow(y1, 2) -
+                    2 * g * x1 - 2 * f * y1;
+
+            // eqn of circle be x^2 + y^2 + 2*g*x + 2*f*y + c = 0
+            // where centre is (h = -g, k = -f) and radius r
+            // as r^2 = h^2 + k^2 - c
+            double h = -g;
+            double k = -f;
+            double sqr_of_r = h * h + k * k - cc;
+
+            // r is the radius
+            double r = Math.sqrt(sqr_of_r);
+
+            double[] res = new double[3];
+            res[0] = h;
+            res[1] = k;
+            res[2] = r;
+            return res;
+        }
+     }
 
     public class Poly extends Polyline {
         public boolean enableEdit = false;
@@ -147,7 +477,10 @@ public class Shapes{
             updateCoords();
         }
 
-
+        public void delete(){
+            Shapes.this.deleteObj(this.name);
+            Shapes.this.root.getChildren().remove(this.root);
+        }
 
         public void discardChanges(){
             if(!ordinatesHistory.isEmpty()) {
@@ -159,6 +492,10 @@ public class Shapes{
 
         public void applyChanges(){
             ordinatesHistory.clear();
+            applyUpdate();
+        }
+        public void applyUpdate(){
+            Shapes.this.dbConn.update(ordinates,name, elemInfo);
         }
 
         public void setEnableEdit(boolean state){
