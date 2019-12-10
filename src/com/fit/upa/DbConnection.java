@@ -67,10 +67,10 @@ public class DbConnection {
 
 
 
-                    System.out.println(" , " +type);
+                    //System.out.println(" , " +type);
                     //TODO pre dalsie objekty
                     if(type == 1){
-                        System.out.println(">>"+Arrays.toString(point));
+                        //System.out.println(">>"+Arrays.toString(point));
                         int[] elemtype = {type,0,0};
                         double[] viewOrdinates = changeToAppOrdinates(point);
                         arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, elemtype));
@@ -79,7 +79,7 @@ public class DbConnection {
                         if (eleminfo[2] == 3) {
                             double[] viewOrdinates = changeToAppOrdinates(ordinates);
                             arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
-                            System.out.println(">>"+type +" " + objType +" " + name +" " + Arrays.toString(viewOrdinates) +" " + Arrays.toString(eleminfo));
+                            //System.out.println(">>"+type +" " + objType +" " + name +" " + Arrays.toString(viewOrdinates) +" " + Arrays.toString(eleminfo));
                         } else if (eleminfo[2] == 1 && type == 3) {
                             double[] viewOrdinates = changeToAppOrdinates(ordinates);
                             arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
@@ -104,7 +104,7 @@ public class DbConnection {
     public void delete(String name){
         String sql;
         sql = "delete from map where name = '"+name+"'";
-        System.out.println(sql);
+        //System.out.println(sql);
         Statement stmt = null;
         try {
             stmt = conn.createStatement();
@@ -122,7 +122,7 @@ public class DbConnection {
         String select = "select a.name, b.name from map a, map b where (a.type = '"+ type +"') and (b.type = '"+ type + "') and (a.name <> b.name) AND " +
                 "(SDO_RELATE(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')";
 
-        System.out.println(select);
+        //System.out.println(select);
         try (PreparedStatement find = conn.prepareStatement(select)) {
             try (ResultSet resultSet = find.executeQuery()) {
                 if (resultSet.next()) {

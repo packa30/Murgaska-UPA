@@ -30,6 +30,5 @@ public class ElemSelect {
         Shapes shapes = new Shapes(arrayList, group);
 
         MainMenu.drawGroup = group;
-        System.out.println(">>"+group);
     }
 }

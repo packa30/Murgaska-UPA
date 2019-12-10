@@ -80,10 +80,8 @@ public class CreateMenu {
         group.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("Hello");
             }
         });
-        System.out.println(getClass());
     }
 
     private void insertPoints(double x, double y){
@@ -108,7 +106,7 @@ public class CreateMenu {
     }
 
     private String createElem(String name, String type, int shapeType){
-        final String[] sqlQuery = {"INSERT INTO map VALUES(\'" + name.toLowerCase() + "\',\'" + type + "\', SDO_GEOMETRY("};
+        final String[] sqlQuery = {"INSERT INTO map (type,name, geometry) VALUES(\'" + type + "\',\'" + name + "\', SDO_GEOMETRY("};
 
         if(shapeType == 2001 && listOfPoints.size() == 2){
             //Point
@@ -162,7 +160,6 @@ public class CreateMenu {
             sqlQuery[0] = "";
         }
 
-        System.out.println(sqlQuery[0]);
         return sqlQuery[0];
     }
 
@@ -177,7 +174,7 @@ public class CreateMenu {
         }
     }
 
-    public String createArea(int shape, String name,String type){
+    public String createArea(String name,String type){
         int x = listOfPoints.get(0);
         int y = listOfPoints.get(1);
         String data;
@@ -188,7 +185,7 @@ public class CreateMenu {
             data = x + "," + (y-15) + "," + (x+15) + "," + y + "," + x + "," + (y+15);
         }
 
-        return "INSERT INTO map (name, type, geometry) VALUES(\'" + name.toLowerCase() + "\',\'" + type.replace("mast","area").toLowerCase() +
+        return "INSERT INTO map (type, name, geometry) VALUES(\'" + type.replace("mast","area").toLowerCase() + "\',\'" +  name.toLowerCase()  +
                 "\', SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,4), SDO_ORDINATE_ARRAY(" + data + ")))";
     }
 
@@ -201,16 +198,21 @@ public class CreateMenu {
         }
 
         String insert = createElem(name, elemType, elemTypeToShapeType(elemType));
-        System.out.println(insert);
+
         if(!insert.isEmpty()){
             connect.connect();
             connect.insert(insert);
+            System.out.println(insert);
+
+            if(elemTypeToShapeType(elemType) == 2001){
+                String area = createArea(name,elemType);
+                connect.insert(area);
+            }
         }
 
-        System.out.println(createArea(elemTypeToShapeType(elemType),name ,elemType));
-
         // In object
-        connect.checkCoverageElement(elemType,name,true);
+        if(elemTypeToShapeType(elemType) != 2002)
+            connect.checkCoverageElement(elemType,name,true);
 
         ArrayList<ObjectsInDB> arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m");
         new Shapes(arrayList, group);

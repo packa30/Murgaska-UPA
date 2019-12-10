@@ -95,7 +95,7 @@ public class MultiOBJ {
     public static MultiOBJ instance;
     public MultiOBJ() throws IOException, SQLException {
         dbConn = DbConnection.getInstance();
-        System.out.println(dbConn);
+        //System.out.println(dbConn);
         instance = this;
     }
 
@@ -145,7 +145,7 @@ public class MultiOBJ {
             Insert.setString(1, String.valueOf(SpatObj.getText()));
             Insert.setString(2, "build");
             Insert.executeQuery();
-            System.out.println(SpatObj);
+            //System.out.println(SpatObj);
 
             ResultSet rs = Insert.getGeneratedKeys();
             rs.next();

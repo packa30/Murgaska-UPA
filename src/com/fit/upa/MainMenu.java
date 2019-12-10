@@ -30,8 +30,6 @@ public class MainMenu {
     }
 
     public void onAddObj() throws IOException {
-        System.out.println("Hello my create");
-
         try {
             MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("createMenu.fxml")));
         } catch (IOException e) {

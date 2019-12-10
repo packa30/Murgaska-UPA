@@ -54,7 +54,7 @@ public class Shapes{
                 cG.getChildren().add(c);
             }
             else if(elem.eleminfo[2] == 1 && elem.type == 2){
-                System.out.println("mame zlozenu priamku");
+                //System.out.println("mame zlozenu priamku");
                 Group plG = new Group();
                 g.getChildren().add(plG);
                 polyls.add(new Polyl(elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
@@ -80,7 +80,7 @@ public class Shapes{
             i++;
         }
         if(i < recs.size()){
-            System.out.println(recs.get(i).name);
+            //System.out.println(recs.get(i).name);
             dbConn.delete(recs.get(i).name);
             recs.remove(i);
         }
@@ -92,7 +92,7 @@ public class Shapes{
             i++;
         }
         if(i < circs.size()){
-            System.out.println(circs.get(i).name);
+            //System.out.println(circs.get(i).name);
             dbConn.delete(circs.get(i).name);
             circs.remove(i);
         }
@@ -104,7 +104,7 @@ public class Shapes{
             i++;
         }
         if(i < polys.size()){
-            System.out.println(polys.get(i).name);
+            //System.out.println(polys.get(i).name);
             dbConn.delete(polys.get(i).name);
             polys.remove(i);
         }
@@ -116,7 +116,7 @@ public class Shapes{
             i++;
         }
         if(i < polyls.size()){
-            System.out.println(polyls.get(i).name);
+            //System.out.println(polyls.get(i).name);
             dbConn.delete(polyls.get(i).name);
             polyls.remove(i);
         }
@@ -128,7 +128,7 @@ public class Shapes{
             i++;
         }
         if(i < points.size()){
-            System.out.println(points.get(i).name);
+            //System.out.println(points.get(i).name);
             dbConn.delete(points.get(i).name);
             points.remove(i);
         }
@@ -190,7 +190,7 @@ public class Shapes{
             for(int i = 0; i < 2; i++){
                 this.ordinates[i] = ordinates[i];
             }
-            System.out.println(">>"+Arrays.toString(ordinates));
+            //System.out.println(">>"+Arrays.toString(ordinates));
             this.tfOrdinates = new TextField[2];
             Circle circCenter = new Circle(ordinates[0], ordinates[1],0);
             this.cs = circCenter;
@@ -379,7 +379,7 @@ public class Shapes{
 
             int pointsCount = ordinates.length/2;
             this.ordinates = new Double[pointsCount*2];
-            System.out.println(">>"+Arrays.toString(ordinates));
+            //System.out.println(">>"+Arrays.toString(ordinates));
             this.tfOrdinates = new TextField[pointsCount*2];
             Circle[] circCorners = new Circle[pointsCount];
             for(int i=0; i<pointsCount; i++){
@@ -473,7 +473,7 @@ public class Shapes{
             g.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    System.out.println(name);
+                    //System.out.println(name);
                 }
             });
 
@@ -598,7 +598,7 @@ public class Shapes{
             this.elemInfo = elemInfo;
             this.root = g;
 
-            System.out.println(Arrays.toString(ordinates));
+            //System.out.println(Arrays.toString(ordinates));
             int pointsCount = ordinates.length/2;
             this.ordinates = new Double[pointsCount*2];
             this.tfOrdinates = new TextField[pointsCount*2];
@@ -627,7 +627,7 @@ public class Shapes{
                 setFill(Color.LIGHTGOLDENRODYELLOW.deriveColor(1,1,1,1));
                 setStroke(Color.YELLOW);
             }
-            System.out.println(Arrays.toString(this.ordinates));
+            //System.out.println(Arrays.toString(this.ordinates));
             root.getChildren().add(circ);
             enableDrag(root, this);
         }
@@ -699,7 +699,7 @@ public class Shapes{
             g.setOnMouseEntered(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    System.out.println(name);
+                    //System.out.println(name);
                 }
             });
 
