@@ -19,4 +19,3 @@ CREATE TABLE multiobj (
 ALTER TABLE multiobj ADD (
   CONSTRAINT multi_pk PRIMARY KEY (ID));
 
-

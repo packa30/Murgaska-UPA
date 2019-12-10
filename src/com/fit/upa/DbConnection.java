@@ -9,8 +9,24 @@ public class DbConnection {
     private static DbConnection dbConn = null;
     private boolean connected = false;
     private Connection conn;
+    private static String login;
+    private static String password;
 
     private DbConnection(){}
+
+    public String getLogin(){
+        return  login;
+    }
+    public void setLogin(String login){
+        DbConnection.login = login;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+    public void setPassword(String password){
+        DbConnection.password = password;
+    }
 
     public static DbConnection getInstance(){
         if(dbConn == null) {
@@ -22,7 +38,8 @@ public class DbConnection {
     public void connect() {
         if(!connected) {
             try {
-                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", "xnocia00", "eWHhifOx");
+
+                conn = DriverManager.getConnection("jdbc:oracle:thin:@//gort.fit.vutbr.cz:1521/orclpdb", login, password);
                 connected = true;
             } catch (SQLException e) {
                 connected = false;
