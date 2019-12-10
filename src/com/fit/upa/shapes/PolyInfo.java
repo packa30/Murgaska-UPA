@@ -151,7 +151,17 @@ public class PolyInfo {
             if(result1 != null){
                 Integer val = Integer.parseInt(result0) - Integer.parseInt(result1) ;
                 free_val.setText(val.toString() + " m2");
+            }else{
+                free_val.setText( result0 + " m2");
             }
+
+            String result2 = connection.selectVal("SELECT count(b.name) val FROM map a, map b where(a.name = \'" + owner.name + "\')  and (b.type = 'build') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
+            gas.setText("Pocet budov");
+
+            gas_val.setText(result2);
+            gas.setVisible(true);
+            gas_val.setVisible(true);
+
         }else if( owner.objType.equals("build")){
             size.setText("Obytna plocha");
             String result0 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_AREA(geometry, 1)) val FROM map where name = \'" + owner.name +"\'");
