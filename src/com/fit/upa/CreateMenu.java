@@ -188,7 +188,7 @@ public class CreateMenu {
             data = x + "," + (y-15) + "," + (x+15) + "," + y + "," + x + "," + (y+15);
         }
 
-        return "INSERT INTO map VALUES(\'" + name.toLowerCase() + "\',\'" + type.replace("mast","area").toLowerCase() +
+        return "INSERT INTO map (name, type, geometry) VALUES(\'" + name.toLowerCase() + "\',\'" + type.replace("mast","area").toLowerCase() +
                 "\', SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,4), SDO_ORDINATE_ARRAY(" + data + ")))";
     }
 
@@ -201,6 +201,7 @@ public class CreateMenu {
         }
 
         String insert = createElem(name, elemType, elemTypeToShapeType(elemType));
+        System.out.println(insert);
         if(!insert.isEmpty()){
             connect.connect();
             connect.insert(insert);
