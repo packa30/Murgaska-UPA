@@ -493,6 +493,7 @@ public class Shapes{
                                 MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("PolyLInfo.fxml")));
                                 PolyLInfo.getInstance().setOwner(owner);
                                 PolyLInfo.getInstance().setName(name);
+                                PolyLInfo.getInstance().getLandSize();
 
                                 if(objType.equals("build")){
                                     PolyLInfo.getInstance().imageButton.setVisible(true);
@@ -719,6 +720,7 @@ public class Shapes{
                                 MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("circInfo.fxml")));
                                 CircInfo.getInstance().setOwner(owner);
                                 CircInfo.getInstance().setName(name);
+                                CircInfo.getInstance().getLandSize();
 
                                 if(objType.equals("build")){
                                     CircInfo.getInstance().imageButton.setVisible(true);
@@ -1020,6 +1022,7 @@ public class Shapes{
                                 MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("polyInfo.fxml")));
                                 PolyInfo.getInstance().setOwner(owner);
                                 PolyInfo.getInstance().setName(name);
+                                PolyInfo.getInstance().getLandSize();
 
                                 if(objType.equals("build")){
                                     PolyInfo.getInstance().imageButton.setVisible(true);
@@ -1233,6 +1236,7 @@ public class Shapes{
                                 MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("recInfo.fxml")));
                                 RecInfo.getInstance().setOwner(owner);
                                 RecInfo.getInstance().setName(name);
+                                RecInfo.getInstance().getLandSize();
 
                                 if(objType.equals("build")){
                                     RecInfo.getInstance().imageButton.setVisible(true);

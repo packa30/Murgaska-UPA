@@ -35,6 +35,7 @@
                 </GridPane>
             </content>
         </ScrollPane>
+
         <CheckBox fx:id="ch1" contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" onAction="#check" text="Enable editing" />
         <Button layoutX="57.0" layoutY="362.0" mnemonicParsing="false" onAction="#onApply" text="Apply" />
         <Button fx:id="imageButton" layoutX="80.0" layoutY="393.0" mnemonicParsing="false" onAction="#onBtn" text="Image" />

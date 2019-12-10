@@ -134,7 +134,21 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
+    }
+
+    public String selectVal(String select){
+        try (PreparedStatement find = conn.prepareStatement(select)) {
+            try (ResultSet resultSet = find.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("val");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
