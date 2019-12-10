@@ -15,16 +15,23 @@ import oracle.jdbc.driver.DBConversion;
 import java.util.ArrayList;
 
 public class Main extends Application {
+    public static Main instance;
+    public Parent root;
+    public Stage stage;
+
+    public Main(){
+        instance = this;
+    }
 
     public static void main(String[] args) {
-
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        login.getInstance().setStage(primaryStage);
+        stage = primaryStage;
+        root = FXMLLoader.load(getClass().getResource("login.fxml"));
+        login.getInstance().setStage(stage);
 
         Scene scene = new Scene(root ,1024, 768);
 
@@ -32,13 +39,13 @@ public class Main extends Application {
         scene.setFill(Paint.valueOf("f5f5f5"));
 
         //Setting the title to Stage.
-        primaryStage.setTitle("Login");
+        stage.setTitle("Login");
 
         //Adding the scene to Stage
-        primaryStage.setScene(scene);
+        stage.setScene(scene);
 
         //Displaying the contents of the stage
-        primaryStage.show();
+        stage.show();
 
         //TODO
 

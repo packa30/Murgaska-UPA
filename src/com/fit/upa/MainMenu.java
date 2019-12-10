@@ -9,7 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
+import javax.xml.ws.handler.LogicalHandler;
 import java.io.IOException;
 
 public class MainMenu {
@@ -30,10 +32,12 @@ public class MainMenu {
     }
 
     public void onAddObj() throws IOException {
-        try {
-            MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("createMenu.fxml")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("createMenu.fxml")));
+    }
+
+    public void logout() throws Exception {
+        DbConnection.getInstance().disconnect();
+        MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("login.fxml")));
+        Main.instance.start(Main.instance.stage);
     }
 }
