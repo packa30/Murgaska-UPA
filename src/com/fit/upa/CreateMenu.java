@@ -200,23 +200,19 @@ public class CreateMenu {
             return;
         }
 
-        if (elemTypeToShapeType(elemType) != 2001) {
-            String insert = createElem(name, elemType, elemTypeToShapeType(elemType));
-            if(!insert.isEmpty()){
-                connect.connect();
-                connect.insert(insert);
-            }
+        String insert = createElem(name, elemType, elemTypeToShapeType(elemType));
+        if(!insert.isEmpty()){
+            connect.connect();
+            connect.insert(insert);
         }
 
-        if (elemTypeToShapeType(elemType) == 2001){
-            System.out.println(createArea(elemTypeToShapeType(elemType),name ,elemType));
-        }
+        System.out.println(createArea(elemTypeToShapeType(elemType),name ,elemType));
 
         // In object
         connect.checkCoverageElement(elemType,name,true);
 
         ArrayList<ObjectsInDB> arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m");
-        Shapes shapes = new Shapes(arrayList, group);
+        new Shapes(arrayList, group);
 
         removeElems();
     }

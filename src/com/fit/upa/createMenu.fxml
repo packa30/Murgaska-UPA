@@ -10,10 +10,10 @@
     <children>
         <TextField layoutX="20.0" layoutY="435.0" fx:id="name"   prefHeight="26.0"   prefWidth="90.0" text=""/>
 
-        <ChoiceBox value="Estate" fx:id="typeBox" layoutX="140.0" layoutY="435.0">
+        <ChoiceBox value="Land" fx:id="typeBox" layoutX="140.0" layoutY="435.0">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Estate" />
+                    <String fx:value="Land" />
                     <String fx:value="Build" />
                     <String fx:value="Electric-mast" />
                     <String fx:value="Electric-net" />
