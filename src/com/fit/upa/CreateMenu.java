@@ -185,7 +185,7 @@ public class CreateMenu {
             data = x + "," + (y-15) + "," + (x+15) + "," + y + "," + x + "," + (y+15);
         }
 
-        return "INSERT INTO map (type, name, geometry) VALUES(\'" + type.replace("mast","area").toLowerCase() + "\',\'" +  name.toLowerCase()  +
+        return "INSERT INTO map (type, name, geometry) VALUES(\'" + type.replace("mast","area").toLowerCase() + "\',\'" +  name.toLowerCase()+ "-area" +
                 "\', SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,4), SDO_ORDINATE_ARRAY(" + data + ")))";
     }
 
@@ -197,6 +197,7 @@ public class CreateMenu {
             return;
         }
 
+        ArrayList<ObjectsInDB> arrayList;
         String insert = createElem(name, elemType, elemTypeToShapeType(elemType));
 
         if(!insert.isEmpty()){
@@ -204,18 +205,20 @@ public class CreateMenu {
             connect.insert(insert);
             System.out.println(insert);
 
+            // In object
+            if(elemTypeToShapeType(elemType) != 2002)
+                connect.checkCoverageElement(elemType,name,true);
+
             if(elemTypeToShapeType(elemType) == 2001){
                 String area = createArea(name,elemType);
                 connect.insert(area);
+                arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m where (m.name =\'" + name + "\') or (m.name =\'" + name + "-area\')");
+            }else{
+                arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m where (m.name =\'" + name + "\')");
             }
+
+            new Shapes(arrayList, group);
         }
-
-        // In object
-        if(elemTypeToShapeType(elemType) != 2002)
-            connect.checkCoverageElement(elemType,name,true);
-
-        ArrayList<ObjectsInDB> arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m");
-        new Shapes(arrayList, group);
 
         removeElems();
     }
