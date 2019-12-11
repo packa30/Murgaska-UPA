@@ -48,11 +48,13 @@ public class DbConnection {
         }
     }
 
+
     public void disconnect() {
         if(connected){
             try {
                 conn.close();
                 connected = false;
+                System.out.println("Disconnect successful");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
