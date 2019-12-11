@@ -9,6 +9,7 @@
 <AnchorPane fx:controller="com.fit.upa.MainMenu" fx:id="pane" minHeight="0.0" minWidth="0.0" prefHeight="160.0"
             prefWidth="100.0" SplitPane.resizableWithParent="false" xmlns:fx="http://javafx.com/fxml/1">
     <children>
+        <Button layoutX="15.0" layoutY="120.0" mnemonicParsing="false" onAction="#findAction" text="TEST" />
         <Button layoutX="64.0" layoutY="120.0" mnemonicParsing="false" text="SELECT" />
         <Button layoutX="49.0" layoutY="179.0" mnemonicParsing="false" onAction="#onAddObj" text="ADD OBJECT" />
         <Button layoutX="69.0" layoutY="420.0" mnemonicParsing="false" text="Click Me!" />

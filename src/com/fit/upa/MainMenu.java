@@ -1,10 +1,13 @@
 package com.fit.upa;
 
+import com.fit.upa.shapes.Shapes;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+
 import java.io.IOException;
 
 public class MainMenu {
@@ -32,5 +35,22 @@ public class MainMenu {
         DbConnection.getInstance().disconnect();
         MainMenu.getInstance().getAnchor().getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("login.fxml")));
         Main.instance.start(Main.instance.stage);
+    }
+
+    public void findAction(){
+        for (Shapes.Rec i : Shapes.instance.recs){
+            if(i.name.equals("land03")){
+                drawGroup.getChildren().remove(i);
+                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));
+                i.setStroke(Color.GREEN);
+            }
+        }
+
+        for (Shapes.Poly i : Shapes.instance.polys){
+            if(i.name.equals("land03")){
+                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));
+                i.setStroke(Color.GREEN);
+            }
+        }
     }
 }

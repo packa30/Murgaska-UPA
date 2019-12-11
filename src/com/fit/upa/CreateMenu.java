@@ -201,8 +201,49 @@ public class CreateMenu {
             System.out.println(insert);
 
             // In object
-            if(elemTypeToShapeType(elemType) != 2002)
+            if(elemTypeToShapeType(elemType) != 2002){
                 connect.checkCoverageElement(elemType,name,true);
+            }else{
+                //Is electric net
+                System.out.println("Line insert");
+                String areaType;
+                String netType;
+                String mastType;
+
+                if(elemType.equals("electric-net")){
+                    areaType = "electric-area";
+                    netType  = "electric-net";
+                    mastType = "electric-mast";
+                }else{
+                    areaType = "gas-area";
+                    netType  = "gas-pipeline";
+                    mastType = "gas-mast";
+                }
+
+                //Get area of net
+                arrayList = connect.query("SELECT a.name, a.type, a.geometry total_road_area FROM map a, map b where( a.type = \'" + areaType +"\') and ( (b.type = \'" + netType + "\' and b.name = \'" + name + "\')) and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
+                System.out.println(arrayList.size());
+
+                if(arrayList.size() > 1){
+                    Double[] coords = new Double[4];
+                    ArrayList<ObjectsInDB> mastList;
+
+                    int i = 0;
+                    for (ObjectsInDB obj : arrayList) {
+                        mastList = connect.query("SELECT b.name, b.type, b.geometry FROM map a, map b where( a.type = \'" + areaType + "\' and a.name= \'" + obj.name + "\') and ( b.type = \'" + mastType + "\' ) and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
+                        coords[i] = mastList.get(0).ordinates[0];
+                        coords[i+1] = mastList.get(0).ordinates[1];
+                        i += 2;
+                    }
+
+                    for (Double coord : coords) {
+                        System.out.println(coord);
+                    }
+
+                    int [] info = {1,2,1};
+                    connect.update(2,coords,name,info);
+                }
+            }
 
             if(elemTypeToShapeType(elemType) == 2001){
                 String area = createArea(name,elemType);
@@ -217,6 +258,8 @@ public class CreateMenu {
 
         removeElems();
     }
+
+
 
     public void onRevert(ActionEvent actionEvent) {
         removeElems();

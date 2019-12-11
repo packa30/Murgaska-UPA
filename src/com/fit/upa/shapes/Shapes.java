@@ -18,17 +18,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Shapes{
+    public static Shapes instance;
 
     public boolean shapeSelected = false;
     Group root;
-    ArrayList<Poly> polys = new ArrayList<Poly>(); //zoznam objektov typu polygono
-    ArrayList<Rec> recs = new ArrayList<Rec>(); //zoznam objektov typu obdlznik
+    public ArrayList<Poly> polys = new ArrayList<Poly>(); //zoznam objektov typu polygono
+    public ArrayList<Rec> recs = new ArrayList<Rec>(); //zoznam objektov typu obdlznik
     ArrayList<Circ> circs = new ArrayList<Circ>();
     ArrayList<Polyl> polyls = new ArrayList<Polyl>();
     ArrayList<Point> points = new ArrayList<Point>();
 
     DbConnection dbConn = DbConnection.getInstance();
     public Shapes(ArrayList<ObjectsInDB> arrayList, Group g){
+        instance = this;
+
         root = g;
         for(ObjectsInDB elem : arrayList) {
             //System.out.println(elem.eleminfo[2]+" , " +elem.type);
