@@ -39,7 +39,7 @@ public class Main extends Application {
         scene.setFill(Paint.valueOf("f5f5f5"));
 
         //Setting the title to Stage.
-        stage.setTitle("Login");
+        stage.setTitle("Estate Solution a.s.");
 
         //Adding the scene to Stage
         stage.setScene(scene);
@@ -67,5 +67,9 @@ public class Main extends Application {
 ////        Displaying the contents of the stage
 //            primaryStage.show();
 //        }
+    }
+    @Override
+    public void stop() throws Exception {
+        MainMenu.getInstance().logout();
     }
 }
