@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -36,7 +37,7 @@ public class MultiOBJ {
     private static final String SQL_FIND_IMAGE = "SELECT image FROM MultiOBJ WHERE spatname = ?";
     private static final String SQL_FIND_DEL_IMAGE = "SELECT id FROM MultiOBJ WHERE spatname = ?";
     private static final String SQL_DELETE_IMAGE = "DELETE FROM MultiOBJ WHERE id = ?";
-    private static final String SQL_SIMILAR_IMAGE = "SELECT dst.id, SI_ScoreByFtrList(new SI_FeatureList(src.image_ac,?,src.image_ch,?,src.image_pc,?,src.image_tx,?),dst.image_si) AS similarity FROM multiobj src, multiobj dst WHERE (src.id = ?) AND (src.id <> dst.id) ORDER BY similarity ASC";
+    private static final String SQL_SIMILAR_IMAGE = "SELECT dst.id, dst.spatname, SI_ScoreByFtrList(new SI_FeatureList(src.image_ac,?,src.image_ch,?,src.image_pc,?,src.image_tx,?),dst.image_si) AS similarity FROM multiobj src, multiobj dst WHERE (src.id = ?) AND (src.id <> dst.id) ORDER BY similarity ASC";
 
 
 
@@ -51,12 +52,17 @@ public class MultiOBJ {
     public Button prev;
     public Button next;
     public Button delImg;
+    public Button rotateImgLeft;
+    public Button rotateImgRight;
+    public Button findSim;
 
     private String title;
     private DbConnection dbConn;
     private int index;
     @FXML
     public Text SpatObj;
+    @FXML
+    public Text name;
 
 
     public Text getSpatObj(){
@@ -73,7 +79,7 @@ public class MultiOBJ {
     }
 
     public void setSpatObj(Text SpatObj) {
-        this.SpatObj = SpatObj;
+        this.SpatObj = SpatObj; name.setText(SpatObj.getText());
     }
 
     public int getIndex() {
@@ -91,6 +97,14 @@ public class MultiOBJ {
 
     @FXML
     public AnchorPane imageSim;
+    public AnchorPane imageSim1;
+    public AnchorPane imageSim2;
+    public AnchorPane imageSim3;
+    public AnchorPane imageSim4;
+
+    private int[] imageSimID = new int[4];
+    private String[] imageSimID_fk = new String[4];
+    private int imageSimIDShown;
 
     public static MultiOBJ instance;
     public MultiOBJ() throws IOException, SQLException {
@@ -208,9 +222,7 @@ public class MultiOBJ {
         OracleResultSet rs = findImg();
         rs=findCur(rs);
         if (rs.next()){
-            imageOut.setVisible(true);
-            delImg.setVisible(true);
-            imageSim.setVisible(false);
+            setVisibility(true, false, 0);
             Image image = getImgFromDB(rs);
             this.imageOut.getChildren().clear();
             if(image != null)
@@ -222,11 +234,23 @@ public class MultiOBJ {
             }
         }
         else{
-            imageOut.setVisible(false);
-            delImg.setVisible(false);
+            setVisibility(false, false, 0);
         }
         nextVis(rs);
     }
+
+    public void setVisibility(boolean images, boolean sim_im, int simcount){
+        imageOut.setVisible(images);
+        delImg.setVisible(images);
+        rotateImgLeft.setVisible(images);
+        rotateImgRight.setVisible(images);
+        findSim.setVisible(images);
+        imageSim.setVisible(sim_im);
+        imageSim1.setVisible(simcount >= 1);
+        imageSim2.setVisible(simcount >= 2);
+        imageSim3.setVisible(simcount >= 3);
+        imageSim4.setVisible(simcount >= 4);
+    };
 
     public OracleResultSet findCur(OracleResultSet rs) throws SQLException {
         int counter=0;
@@ -312,15 +336,27 @@ public class MultiOBJ {
     public void findSim(ActionEvent event) throws IOException, SQLException {
         ResultSet rs = findWithID();
         try (PreparedStatement preparedStatement = dbConn.getConn().prepareStatement(SQL_SIMILAR_IMAGE)) {
-            preparedStatement.setDouble(1, 0.7);
-            preparedStatement.setDouble(2, 0.7);
-            preparedStatement.setDouble(3, 0.7);
-            preparedStatement.setDouble(4, 0.7);
+            preparedStatement.setDouble(1, 0.3);
+            preparedStatement.setDouble(2, 0.3);
+            preparedStatement.setDouble(3, 0.1);
+            preparedStatement.setDouble(4, 0.3);
             preparedStatement.setInt(5, rs.getBigDecimal(1).intValue());
             ResultSet resultSet2 = preparedStatement.executeQuery();
-            if (resultSet2.next()){
-                showSimImg(resultSet2.getInt(1));
+            int foursome=1;
+            while(resultSet2.next()){
+                this.imageSimID[foursome-1] = resultSet2.getInt(1);
+                this.imageSimID_fk[foursome-1] = resultSet2.getString(2);
+                this.imageSimIDShown=0;
+                if (foursome == 1){
+                    showSimImg(resultSet2.getInt(1));
+                    showSimImg(resultSet2.getInt(1),foursome);
+                }else{
+                    showSimImg(resultSet2.getInt(1),foursome);
+                }
+                if (foursome==4){break;}
+                foursome++;
             }
+            setVisibility(true,true, foursome);
         }
     }
 
@@ -335,7 +371,40 @@ public class MultiOBJ {
                 imgView.fitWidthProperty().bind(this.imageSim.widthProperty());
                 imgView.fitHeightProperty().bind(this.imageSim.heightProperty());
                 this.imageSim.getChildren().add(imgView);
-                imageSim.setVisible(true);
+            }
+        }
+    }
+
+    public void showSimImg(int id, int pos) throws IOException, SQLException {
+        ResultSet resultSet = selectImg(id);
+        OrdImage oImage = getSelectedImg(resultSet);
+        if (oImage != null){
+            BufferedImage buffImg = ImageIO.read(new ByteArrayInputStream(oImage.getDataInByteArray()));
+            Image image = SwingFXUtils.toFXImage(buffImg, null);
+            if(image != null){
+                ImageView imgView = new ImageView(image);
+                switch (pos){
+                    case 1:
+                        imgView.fitWidthProperty().bind(this.imageSim1.widthProperty());
+                        imgView.fitHeightProperty().bind(this.imageSim1.heightProperty());
+                        this.imageSim1.getChildren().add(imgView);
+                        break;
+                    case 2:
+                        imgView.fitWidthProperty().bind(this.imageSim2.widthProperty());
+                        imgView.fitHeightProperty().bind(this.imageSim2.heightProperty());
+                        this.imageSim2.getChildren().add(imgView);
+                        break;
+                    case 3:
+                        imgView.fitWidthProperty().bind(this.imageSim3.widthProperty());
+                        imgView.fitHeightProperty().bind(this.imageSim3.heightProperty());
+                        this.imageSim3.getChildren().add(imgView);
+                        break;
+                    case 4:
+                        imgView.fitWidthProperty().bind(this.imageSim4.widthProperty());
+                        imgView.fitHeightProperty().bind(this.imageSim4.heightProperty());
+                        this.imageSim4.getChildren().add(imgView);
+                        break;
+                }
             }
         }
     }
@@ -368,6 +437,33 @@ public class MultiOBJ {
     @FXML
     public void next(ActionEvent event) throws IOException, SQLException {
         nextA();
+    }
+
+    public void imageSimHandler(MouseEvent mouseEvent) throws IOException, SQLException {
+        if (mouseEvent.getSource() == imageSim1){
+            showSimImg(this.imageSimID[0]);
+            this.imageSimIDShown=0;
+        }else if(mouseEvent.getSource() == imageSim2){
+            showSimImg(this.imageSimID[1]);
+            this.imageSimIDShown=1;
+        }else if(mouseEvent.getSource() == imageSim3){
+            showSimImg(this.imageSimID[2]);
+            this.imageSimIDShown=2;
+        }else if(mouseEvent.getSource() == imageSim4){
+            showSimImg(this.imageSimID[3]);
+            this.imageSimIDShown=3;
+        }else{
+            Text text = new Text();
+            text.setText(this.imageSimID_fk[this.imageSimIDShown]);
+            if (!text.getText().equals(SpatObj.getText())){
+                pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("multiOBJ.fxml")));
+                MultiOBJ.getInstance().setSpatObj(text);
+                MultiOBJ.getInstance().setIndex(0);
+                MultiOBJ.getInstance().showImg();
+            }
+
+        }
+
     }
 }
 
