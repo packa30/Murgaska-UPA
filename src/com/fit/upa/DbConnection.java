@@ -94,6 +94,13 @@ public class DbConnection {
                         double[] viewOrdinates = changeToAppOrdinates(point);
                         arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, elemtype));
                     }
+                    else if(type == 6){
+                        System.out.println(Arrays.toString(eleminfo));
+                        System.out.println(Arrays.toString(ordinates));
+                        System.out.println(type);
+                        double[] viewOrdinates = changeToAppOrdinates(ordinates);
+                        arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                    }
                     else {
                         if (eleminfo[2] == 3) {
                             double[] viewOrdinates = changeToAppOrdinates(ordinates);
@@ -175,11 +182,19 @@ public class DbConnection {
         double[] dbOrdinates = changeToDbOrdinates(ordinates);
         String sql = "";
         if(type == 3){ //jedna sa o obdlznik
-            sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(dbOrdinates)+") where name = '" + name + "'";
+            sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(type, dbOrdinates)+") where name = '" + name + "'";
+            System.out.println(sql);
+        }
+        else if(type == 33){ //jedna sa o obdlznik
+            sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(type, dbOrdinates)+") where name = '" + name + "'";
             System.out.println(sql);
         }
         else if(type == 2){
-            sql = "update map set geometry = SDO_GEOMETRY(2002, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(dbOrdinates)+") where name = '" + name + "'";
+            sql = "update map set geometry = SDO_GEOMETRY(2002, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(type, dbOrdinates)+") where name = '" + name + "'";
+            System.out.println(sql);
+        }
+        else if(type == 6){
+            sql = "update map set geometry = SDO_GEOMETRY(2006, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(type, dbOrdinates)+") where name = '" + name + "'";
             System.out.println(sql);
         }
         else if(type == 1){
@@ -247,10 +262,24 @@ public class DbConnection {
         return str;
     }
 
-    public String arrayToString(double[] array){
+    public String arrayToString(int type, double[] array){
         String str = "(";
-        for(double i: array){
-            str += i+",";
+        if(type == 6){
+            for(int i = 0; i < array.length; i++){
+                if(i == 4){
+                    str += array[i-2]+",";
+                    str += array[i-1]+",";
+                }
+                str += array[i]+",";
+            }
+
+        } else {
+            for(double i: array){
+                str += i+",";
+            }
+        }
+        if(type == 3) {
+            str += array[0]+","+array[1]+",";
         }
         str = str.substring(0, str.length() - 1);
         str += ")";

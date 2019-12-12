@@ -243,11 +243,12 @@ INSERT INTO map VALUES (
   'gas-pipeline',
   'g1-g2',
    SDO_GEOMETRY (
-     2002,
+     2006,
      NULL,
      NULL,
-     SDO_ELEM_INFO_ARRAY(1,2,1),
-     SDO_ORDINATE_ARRAY(60, 25, 100,25, 100,175))
+     SDO_ELEM_INFO_ARRAY(1,4,2 , 1,2,1, 3,2,1),
+     SDO_ORDINATE_ARRAY(60, 25, 100,25,
+                        100,25, 100,175))
 );
 
 INSERT INTO map VALUES(

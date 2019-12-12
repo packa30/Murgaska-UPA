@@ -35,7 +35,14 @@ public class Shapes{
         root = g;
         for(ObjectsInDB elem : arrayList) {
             //System.out.println(elem.eleminfo[2]+" , " +elem.type);
-            if(elem.eleminfo[2] == 3){
+            if(elem.type == 6){
+                Group plG = new Group();
+                g.getChildren().add(plG);
+                polyls.add(new Polyl(elem.type, elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
+                Polyl p = polyls.get(polyls.size()-1);
+                plG.getChildren().add(p);
+            }
+            else if(elem.eleminfo[2] == 3){
                 Group rG = new Group();
                 g.getChildren().add(rG);
                 recs.add(new Rec(elem.ordinates, elem.name, elem.objType,elem.eleminfo, rG));
@@ -60,7 +67,7 @@ public class Shapes{
                 //System.out.println("mame zlozenu priamku");
                 Group plG = new Group();
                 g.getChildren().add(plG);
-                polyls.add(new Polyl(elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
+                polyls.add(new Polyl(elem.type, elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
                 Polyl p = polyls.get(polyls.size()-1);
                 plG.getChildren().add(p);
             }
@@ -370,16 +377,31 @@ public class Shapes{
 
         public String name;
         public String objType;
+        public int type;
         public int[] elemInfo;
         public Group polylc = new Group();
         public Group root;
 
-        public Polyl(double[] ordinates, String name, String objType,int[] elemInfo, Group g){
+        public Polyl(int type, double[] ordinates, String name, String objType,int[] elemInfo, Group g){
             this.name = name;
             this.objType = objType;
+            this.type = type;
             this.elemInfo = elemInfo;
             this.root = g;
-
+/*
+            if(type == 6){
+                int pointsCount = ordinates.length/2;
+                this.ordinates = new Double[(pointsCount-1)*2];
+                this.tfOrdinates = new TextField[(pointsCount-1)*2];
+                Circle[] circCorners = new Circle[pointsCount-1];
+                for(int i=0; i<(pointsCount-1); i++){
+                    this.ordinates[2*i] = ordinates[2*i];
+                    this.ordinates[2*i+1] = ordinates[2*i+1];
+                    circCorners[i] = new Circle(ordinates[2*i], ordinates[2*i+1], 0);
+                }
+                this.cs = circCorners;
+            }
+*/
             int pointsCount = ordinates.length/2;
             this.ordinates = new Double[pointsCount*2];
             //System.out.println(">>"+Arrays.toString(ordinates));
@@ -443,7 +465,7 @@ public class Shapes{
             applyUpdate();
         }
         public void applyUpdate(){
-            Shapes.this.dbConn.update(2, ordinates,name, elemInfo);
+            Shapes.this.dbConn.update(type, ordinates,name, elemInfo);
         }
 
         public void setEnableEdit(boolean state){
@@ -1200,7 +1222,7 @@ public class Shapes{
         }
 
         public void applyUpdate(){
-            Shapes.this.dbConn.update(3, ordinates,name, elemInfo);
+            Shapes.this.dbConn.update(33, ordinates,name, elemInfo);
         }
 
         public void setEnableEdit(boolean state){
