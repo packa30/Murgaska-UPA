@@ -247,7 +247,8 @@ public class DbConnection {
     public double[] changeToDbOrdinates(Double[] ordinates){
         double[] viewOrdinates = new double[ordinates.length];
         for(int i =0; i<ordinates.length; i++){
-            viewOrdinates[i] = ordinates[i]/3.8;
+            //viewOrdinates[i] = ordinates[i]/3.8;
+            viewOrdinates[i] = Math.round(ordinates[i]/3.8 * 10)/10.0;
         }
         return viewOrdinates;
     }

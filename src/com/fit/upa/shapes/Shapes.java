@@ -352,10 +352,10 @@ public class Shapes{
                                 double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[1] + deltaY;
                                 cs.setCenterX(newX); //TODO nacitat len raz
                                 ordinates[0] = newX;
-                                tfOrdinates[0].setText(String.valueOf(newX/3.8));
+                                tfOrdinates[0].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                 cs.setCenterY(newY);
                                 ordinates[1] = newY;
-                                tfOrdinates[1].setText(String.valueOf(newY/3.8));
+                                tfOrdinates[1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
 
                             Point.super.setCenterX(ordinates[0]);
                             Point.super.setCenterY(ordinates[1]);
@@ -574,10 +574,10 @@ public class Shapes{
                                 double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2+1] + deltaY;
                                 cs[i].setCenterX(newX); //TODO nacitat len raz
                                 ordinates[i * 2] = newX;
-                                tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                tfOrdinates[i * 2].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                 cs[i].setCenterY(newY);
                                 ordinates[i * 2 + 1] = newY;
-                                tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                tfOrdinates[i * 2 + 1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
                             }
                             Polyl.super.getPoints().setAll(ordinates);
                         }
@@ -590,9 +590,9 @@ public class Shapes{
                             for (int i = 0; i < cs.length; i++) {
                                 if (mouseEvent.getTarget().equals(cs[i])) {
                                     ordinates[i * 2] = newX;
-                                    tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                    tfOrdinates[i * 2].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                     ordinates[i * 2 + 1] = newY;
-                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
                                     Polyl.super.getPoints().setAll(ordinates);
                                 }
                             }
@@ -801,10 +801,10 @@ public class Shapes{
                                 double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2+1] + deltaY;
                                 cs[i].setCenterX(newX); //TODO nacitat len raz
                                 ordinates[i * 2] = newX;
-                                tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                tfOrdinates[i * 2].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                 cs[i].setCenterY(newY);
                                 ordinates[i * 2 + 1] = newY;
-                                tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                tfOrdinates[i * 2 + 1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
                             }
                              double[] resultCircle = findCircle(cs);
                              Circ.super.setCenterX(resultCircle[0]);
@@ -820,9 +820,9 @@ public class Shapes{
                             for (int i = 0; i < cs.length; i++) {
                                 if (mouseEvent.getTarget().equals(cs[i])) {
                                     ordinates[i * 2] = newX;
-                                    tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                    tfOrdinates[i * 2].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                     ordinates[i * 2 + 1] = newY;
-                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
                                     double[] resultCircle = findCircle(cs);
                                     Circ.super.setCenterX(resultCircle[0]);
                                     Circ.super.setCenterY(resultCircle[1]);
@@ -1095,9 +1095,9 @@ public class Shapes{
                             for (int i = 0; i < cs.length; i++) {
                                 if (mouseEvent.getTarget().equals(cs[i])) {
                                     ordinates[i * 2] = newX;
-                                    tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                    tfOrdinates[i * 2].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                     ordinates[i * 2 + 1] = newY;
-                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                    tfOrdinates[i * 2 + 1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
                                     Poly.super.getPoints().setAll(ordinates);
                                 }
                             }
@@ -1110,10 +1110,10 @@ public class Shapes{
                                 double newY = ordinatesHistory.get(ordinatesHistory.size()-1)[i*2+1] + deltaY;
                                 cs[i].setCenterX(newX); //TODO nacitat len raz
                                 ordinates[i * 2] = newX;
-                                tfOrdinates[i * 2].setText(String.valueOf(newX/3.8));
+                                tfOrdinates[i * 2].setText(String.valueOf(Math.round(newX/3.8 * 10)/10.0));
                                 cs[i].setCenterY(newY);
                                 ordinates[i * 2 + 1] = newY;
-                                tfOrdinates[i * 2 + 1].setText(String.valueOf(newY/3.8));
+                                tfOrdinates[i * 2 + 1].setText(String.valueOf(Math.round(newY/3.8 * 10)/10.0));
                             }
                             Poly.super.getPoints().setAll(ordinates);
                         }
@@ -1319,18 +1319,19 @@ public class Shapes{
                                 Rec.super.setHeight(cs[1].getCenterY() - cs[0].getCenterY());
 
                                 ordinates[0] = newX;
-                                tfOrdinates[0].setText(String.valueOf(newX/3.8));
+                                //tfOrdinates[0].setText(String.valueOf(Math.round((newX/3.8) * 100)/100));
+                                tfOrdinates[0].setText(String.valueOf(Math.round((newX/3.8) * 10)/10.0));
                                 ordinates[1] = newY;
-                                tfOrdinates[1].setText(String.valueOf(newY/3.8));
+                                tfOrdinates[1].setText(String.valueOf(Math.round((newY/3.8) * 10)/10.0));
                             }
                             else{
                                 Rec.super.setWidth(cs[1].getCenterX() - cs[0].getCenterX());
                                 Rec.super.setHeight(cs[1].getCenterY() - cs[0].getCenterY());
 
                                 ordinates[2] = newX;
-                                tfOrdinates[2].setText(String.valueOf(newX/3.8));
+                                tfOrdinates[2].setText(String.valueOf(Math.round((newX/3.8) * 10)/10.0));
                                 ordinates[3] = newY;
-                                tfOrdinates[3].setText(String.valueOf(newY/3.8));
+                                tfOrdinates[3].setText(String.valueOf(Math.round((newY/3.8) * 10)/10.0));
                             }
                         } else if (mouseEvent.getTarget() instanceof Rec) {
                             double deltaX = mouseEvent.getX() - dragDelta.x;
@@ -1339,19 +1340,19 @@ public class Shapes{
                             //cs[0].setCenterX(startPoints.x1+deltaX);
                             cs[0].setCenterX(ordinatesHistory.get(ordinatesHistory.size()-1)[0]+deltaX);
                             ordinates[0] = cs[0].getCenterX();
-                            tfOrdinates[0].setText(String.valueOf(ordinates[0]/3.8));
+                            tfOrdinates[0].setText(String.valueOf(Math.round(ordinates[0]/3.8 * 10)/10.0));
                             //cs[1].setCenterX(startPoints.x2+deltaX);
                             cs[1].setCenterX(ordinatesHistory.get(ordinatesHistory.size()-1)[2]+deltaX);
                             ordinates[2] = cs[1].getCenterX();
-                            tfOrdinates[2].setText(String.valueOf(ordinates[2]/3.8));
+                            tfOrdinates[2].setText(String.valueOf(Math.round(ordinates[2]/3.8 * 10)/10.0));
                             //cs[0].setCenterY(startPoints.y1+deltaY);
                             cs[0].setCenterY(ordinatesHistory.get(ordinatesHistory.size()-1)[1]+deltaY);
                             ordinates[1] = cs[0].getCenterY();
-                            tfOrdinates[1].setText(String.valueOf(ordinates[1]/3.8));
+                            tfOrdinates[1].setText(String.valueOf(Math.round(ordinates[1]/3.8 * 10)/10.0));
                            // cs[1].setCenterY(startPoints.y2+deltaY);
                             cs[1].setCenterY(ordinatesHistory.get(ordinatesHistory.size()-1)[3]+deltaY);
                             ordinates[3] = cs[1].getCenterY();
-                            tfOrdinates[3].setText(String.valueOf(ordinates[3]/3.8));
+                            tfOrdinates[3].setText(String.valueOf(Math.round(ordinates[3]/3.8 * 10)/10.0));
 
                             ordinates[0] = ordinatesHistory.get(ordinatesHistory.size()-1)[0]+deltaX;
                             ordinates[1] = ordinatesHistory.get(ordinatesHistory.size()-1)[1]+deltaY;
