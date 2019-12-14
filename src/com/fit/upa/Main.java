@@ -70,6 +70,10 @@ public class Main extends Application {
     }
     @Override
     public void stop() throws Exception {
-        MainMenu.getInstance().logout();
+        try{
+            MainMenu.getInstance().logout();
+        }catch (Exception e){
+            System.out.println("User of application never logged in");
+        }
     }
 }

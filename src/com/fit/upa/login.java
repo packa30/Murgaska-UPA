@@ -11,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -29,8 +31,10 @@ public class login {
     private static Stage primaryStage;
 
     public CheckBox checked;
+    public CheckBox checked2;
 
     private boolean dbInit=false;
+    private boolean imageDBInit=false;
 
     public login() throws IOException, SQLException {
         //System.out.println(dbConn);
@@ -93,11 +97,21 @@ public class login {
         for (int i=0; i < toBeExecuted.length;i++){
             initDB(toBeExecuted[i]);
         }
+        if (imageDBInit){
+            for (int t=1; t <= 4;t++){
+                for (int i=1; i <= 4;i++){
+                    MultiOBJ multi = new MultiOBJ();
+                    URL res = getInstance().getClass().getResource("resources/images/dom" + t + "_" + i + ".jpg");
+                    multi.toDBFile(res.getPath(),"build" + t);
+                    System.out.println((t-1)*4+i + ". image inserted");
+                }
+            }
+        }
     }
 
     public void initDB(String aSQLScriptFilePath) throws IOException,SQLException {
         Statement stmt = DbConnection.getInstance().getConn().createStatement();
-        InputStream inputStream = getInstance().getClass().getResourceAsStream("initDB/"+aSQLScriptFilePath);
+        InputStream inputStream = getInstance().getClass().getResourceAsStream("resources/sql/"+aSQLScriptFilePath);
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         String str;
         StringBuffer sb = new StringBuffer();
@@ -119,8 +133,15 @@ public class login {
     public void initDB(ActionEvent event){
         if(!checked.isSelected()){
             dbInit=false;
+            checked2.setVisible(false);
         }else{
             dbInit=true;
+            checked2.setVisible(true);
+        }
+        if(!checked2.isSelected()){
+            imageDBInit=false;
+        }else{
+            imageDBInit=true;
         }
     }
 

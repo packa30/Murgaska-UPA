@@ -134,7 +134,7 @@ public class MultiOBJ {
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
         if (selectedFiles != null){
             for (File child : selectedFiles) {
-                toDBFile(child.toString());
+                toDBFile(child.toString(),String.valueOf(SpatObj.getText()));
             }
         }
         showImg();
@@ -151,12 +151,12 @@ public class MultiOBJ {
         }
     }
 
-    public void toDBFile(String filename) throws SQLException, IOException{
+    public void toDBFile(String filename, String spatName) throws SQLException, IOException{
         final boolean previousAutoCommit = dbConn.getConn().getAutoCommit();
         dbConn.getConn().setAutoCommit(false);
         try (PreparedStatement Insert = dbConn.getConn().prepareStatement(SQL_INSERT_NEW, new String[] { "id", "spatname", "spattype" })){
 
-            Insert.setString(1, String.valueOf(SpatObj.getText()));
+            Insert.setString(1, spatName);
             Insert.setString(2, "build");
             Insert.executeQuery();
             //System.out.println(SpatObj);
@@ -187,6 +187,7 @@ public class MultiOBJ {
         final OracleResultSet oracleResultSet = (OracleResultSet) resultSet;
         ordImage = (OrdImage) oracleResultSet.getORAData(1, OrdImage.getORADataFactory());
         ordImage.loadDataFromFile(filename);
+        ordImage.process("fixedScale=300 200");
         ordImage.setProperties();
         return ordImage;
     }

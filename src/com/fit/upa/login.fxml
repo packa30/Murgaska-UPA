@@ -20,5 +20,5 @@
     <Button fx:id="xnocia00" layoutX="500.0" layoutY="350.0" mnemonicParsing="false" onAction="#xnocia00" text="xnocia00"/>
     <Button fx:id="xkrajc17" layoutX="600.0" layoutY="350.0" mnemonicParsing="false" onAction="#xkrajc17" text="xkrajc17"/>
     <CheckBox fx:id="checked" layoutX="490.0" layoutY="400.0" mnemonicParsing="false" onAction="#initDB" text="Initialize DB" />
-
+    <CheckBox fx:id="checked2" layoutX="490.0" layoutY="420.0" mnemonicParsing="false" onAction="#initDB" text="Initialize (16) images takes ~30-60 seconds" visible="false"/>
 </AnchorPane>
