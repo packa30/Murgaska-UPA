@@ -134,10 +134,10 @@ public class CreateMenu {
             sqlQuery[0] += ")))";
         }else if(shapeType == 2002 && listOfPoints.size() > 4){
             int cnt = 1 + listOfPoints.size()/4;
-            sqlQuery[0] += "2006,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,4," + cnt + ", ";
+            sqlQuery[0] += "2006,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,4," + cnt + ",";
 
             for (int i = 0; i < cnt; i++){
-                sqlQuery[0] += Integer.toString((1 + (i*2))) + ",2,1, ";
+                sqlQuery[0] += Integer.toString((1 + (i*2))) + ",2,1,";
             }
 
             sqlQuery[0]  = sqlQuery[0].substring(0,sqlQuery[0].length()-1);
