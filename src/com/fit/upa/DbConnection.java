@@ -204,6 +204,10 @@ public class DbConnection {
             sql = "update map set geometry = SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE"+point+",NULL),NULL,NULL) where name = '" + name + "'";
             updateArea(name,ordinates);
         }
+        else if(type == 42){
+            sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY("+arrayToStringCirc(dbOrdinates)+")) where name = '" + name + "'";
+            updateArea(name,ordinates);
+        }
 
         Statement stmt = null;
         try {
@@ -218,15 +222,28 @@ public class DbConnection {
         }
     }
 
+    public String arrayToStringCirc(double[] ordinates){
+        String data = "";
+        for (int i = 0; i < ordinates.length; i++){
+            if(i < ordinates.length-1)
+                data += ordinates[i] + ",";
+            else
+                data += ordinates[i];
+        }
+        return data;
+    }
+
     public void updateArea(String name, Double[] ordinates){
         double x = ordinates[0];
         double y = ordinates[1];
         for (Shapes.Circ i: Shapes.instance.circs) {
             if(i.name.equals(name + "-area") && i.objType.equals("electric-area")){
-                Double[] newCoords = {x,y};
+                //data = x + "," + (y-10) + "," + (x+10) + "," + y + "," + x + "," + (y+10);
+                Double[] newCoords = {x,y-38,  x+38,y,  x,y+38};
                 i.setCenterX(x); i.setCenterY(y);
-                i.ordinates = newCoords;
-                i.applyChanges();
+                update(42,newCoords,i.name,i.elemInfo);
+//                i.ordinates = newCoords;
+  //              i.applyChanges();
                 break;
             }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
                 Double[] newCoords = {x,y};

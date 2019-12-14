@@ -44,6 +44,10 @@ public class RecInfo {
     public Text gas;
     @FXML
     public Text gas_val;
+    @FXML
+    public Text budovy;
+    @FXML
+    public Text budovy_val;
 
     public static RecInfo instance;
 
@@ -68,6 +72,8 @@ public class RecInfo {
         free_val = (Text) pane.lookup("#plocha_val");
         gas      = (Text) pane.lookup("#plynovod");
         gas_val  = (Text) pane.lookup("#plynovod_val");
+        budovy      = (Text) pane.lookup("#budovy");
+        budovy_val  = (Text) pane.lookup("#budovy_val");
         gas.setVisible(false);
         gas_val.setVisible(false);
     }
@@ -156,9 +162,12 @@ public class RecInfo {
             }
 
             String result2 = connection.selectVal("SELECT count(b.name) val FROM map a, map b where(a.name = \'" + owner.name + "\')  and (b.type = 'build') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
-            gas.setText("Pocet budov");
+            budovy_val.setText(result2);
 
-            gas_val.setText(result2);
+            result2 = connection.selectVal("SELECT b.name val FROM map a, map b where( a.name = \'"+ owner.name +"\')  and (b.type = 'gas-mast') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
+            if(result2 != null)
+                gas_val.setText(result2);
+
             gas.setVisible(true);
             gas_val.setVisible(true);
 
@@ -168,6 +177,8 @@ public class RecInfo {
             size_val.setText( result0 + " m2");
             free_val.setVisible(false);
             free.setVisible(false);
+            budovy_val.setVisible(false);
+            budovy.setVisible(false);
         }else{
             size_val.setVisible(false);
             size.setVisible(false);
