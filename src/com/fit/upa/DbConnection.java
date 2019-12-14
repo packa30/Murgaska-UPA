@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.fit.upa.shapes.Shapes;
 import oracle.spatial.geometry.JGeometry;
 
 public class DbConnection {
@@ -181,6 +182,7 @@ public class DbConnection {
     public void update(int type, Double[] ordinates, String name, int[] elemInfo ){
         double[] dbOrdinates = changeToDbOrdinates(ordinates);
         String sql = "";
+        System.out.println("TOTOTOT" + type);
         if(type == 3){ //jedna sa o obdlznik
             sql = "update map set geometry = SDO_GEOMETRY(2003, NULL, NULL,SDO_ELEM_INFO_ARRAY"+arrayToString(elemInfo)+",SDO_ORDINATE_ARRAY"+arrayToString(type, dbOrdinates)+") where name = '" + name + "'";
             System.out.println(sql);
@@ -200,7 +202,7 @@ public class DbConnection {
         else if(type == 1){
             String point = arrayToString2(dbOrdinates);
             sql = "update map set geometry = SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE"+point+",NULL),NULL,NULL) where name = '" + name + "'";
-            System.out.println(sql);
+            updateArea(name,ordinates);
         }
 
         Statement stmt = null;
@@ -213,6 +215,33 @@ public class DbConnection {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    public void updateArea(String name, Double[] ordinates){
+        double x = ordinates[0];
+        double y = ordinates[1];
+        for (Shapes.Circ i: Shapes.instance.circs) {
+            if(i.name.equals(name + "-area") && i.objType.equals("electric-area")){
+                System.out.println("Sem tu <");
+                Double[] newCoords = {x,y-38.0,x+38.0,y,x,y+38.0};
+                i.setCenterX(x); i.setCenterY(y);
+                i.ordinates = newCoords;
+                i.updateCoords();
+                i.applyChanges();
+                i.applyUpdate();
+                i.ordinatesHistory.clear();
+            }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
+                System.out.println("Sem tu <>");
+                Double[] newCoords = {x,y-57,x+57,y,x,y+57};
+                i.setCenterX(x); i.setCenterY(y);
+                i.ordinates = newCoords;
+                i.updateCoords();
+                i.applyChanges();
+                i.applyUpdate();
+                i.ordinatesHistory.clear();
+            }
         }
     }
 

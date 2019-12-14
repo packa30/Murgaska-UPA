@@ -38,18 +38,21 @@ public class MainMenu {
     }
 
     public void findAction(){
-        for (Shapes.Rec i : Shapes.instance.recs){
-            if(i.name.equals("land03")){
+        for (Shapes.Circ i : Shapes.instance.circs){
+            if(i.name.equals("e22-area")){
                 drawGroup.getChildren().remove(i);
-                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));
-                i.setStroke(Color.GREEN);
+                System.out.println("HHHHHHHHHHHHHHHHHHH");
+//                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));
+//                i.setStroke(Color.GREEN);
             }
         }
 
         for (Shapes.Poly i : Shapes.instance.polys){
-            if(i.name.equals("land03")){
-                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));
-                i.setStroke(Color.GREEN);
+            if(i.name.equals("e22-area")){
+                System.out.println("OOOOOOOOOOOOOOOOOO");
+
+                //                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));
+//                i.setStroke(Color.GREEN);
             }
         }
     }
