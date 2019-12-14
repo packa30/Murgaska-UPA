@@ -221,8 +221,11 @@ public class CreateMenu {
                 }
 
                 //Get area of net
-                arrayList = connect.query("SELECT a.name, a.type, a.geometry total_road_area FROM map a, map b where( a.type = \'" + areaType +"\') and ( (b.type = \'" + netType + "\' and b.name = \'" + name + "\')) and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
-                System.out.println(arrayList.size());
+                String getArea = "SELECT a.name, a.type, a.geometry FROM map a, map b where( a.type = \'" + areaType +"\') and ( (b.type = \'" + netType + "\' and b.name = \'" + name + "\')) and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')";
+                arrayList = connect.query(getArea);
+                System.out.println(getArea);
+                if(arrayList == null)
+                    return;
 
                 if(arrayList.size() > 1){
                     Double[] coords = new Double[4];

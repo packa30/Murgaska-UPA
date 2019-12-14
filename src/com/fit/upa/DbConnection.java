@@ -223,21 +223,20 @@ public class DbConnection {
         double y = ordinates[1];
         for (Shapes.Circ i: Shapes.instance.circs) {
             if(i.name.equals(name + "-area") && i.objType.equals("electric-area")){
-                Double[] newCoords = {x,y-38.0,x+38.0,y,x,y+38.0};
+                Double[] newCoords = {x,y};
                 i.setCenterX(x); i.setCenterY(y);
                 i.ordinates = newCoords;
-                i.updateCoords();
                 i.applyChanges();
+                break;
             }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
-                Double[] newCoords = {x,y-57,x+57,y,x,y+57};
+                Double[] newCoords = {x,y};
                 i.setCenterX(x); i.setCenterY(y);
                 i.ordinates = newCoords;
-                i.updateCoords();
                 i.applyChanges();
+                break;
             }
         }
     }
-
 
 
     public void insert(String sql){

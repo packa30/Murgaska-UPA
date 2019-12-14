@@ -48,3 +48,7 @@
         <Button layoutX="57.0" layoutY="362.0" mnemonicParsing="false" onAction="#onApply" text="Apply" />
         <Button fx:id="imageButton" layoutX="80.0" layoutY="393.0" mnemonicParsing="false" onAction="#onBtn" text="Image" />
         <Button fx:id="deleteButton" layoutX="121.0" layoutY="362.0" mnemonicParsing="false" onAction="#onDelete" text="Delete" />
+
+    </children>
+
+</AnchorPane>
