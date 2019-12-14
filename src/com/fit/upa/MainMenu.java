@@ -39,7 +39,7 @@ public class MainMenu {
 
     public void findAction(){
         for (Shapes.Circ i : Shapes.instance.circs){
-            if(i.name.equals("e22-area")){
+            if(i.name.equals("test22-area")){
                 drawGroup.getChildren().remove(i);
                 System.out.println("HHHHHHHHHHHHHHHHHHH");
 //                i.setFill(Color.GREEN.deriveColor(1,1,1,0.5));

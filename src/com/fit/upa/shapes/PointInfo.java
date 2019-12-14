@@ -98,7 +98,19 @@ public class PointInfo {
             owner.setEnableEdit(false);
             owner.discardChanges();
             owner.orderObjects();
+            String area = owner.name + "-area";
             owner.delete();
+
+            for (Shapes.Circ i: Shapes.instance.circs){
+                if(i.name.equals(area)){
+                    i.setEnableEdit(false);
+                    i.discardChanges();
+                    i.orderObjects();
+                    i.delete();
+                    break;
+                }
+            }
+
             pane.getChildren().setAll((Node) FXMLLoader.load(getClass().getResource("../mainMenu.fxml")));
         }
     }

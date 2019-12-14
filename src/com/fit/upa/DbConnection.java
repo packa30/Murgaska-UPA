@@ -216,7 +216,6 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void updateArea(String name, Double[] ordinates){
@@ -224,26 +223,22 @@ public class DbConnection {
         double y = ordinates[1];
         for (Shapes.Circ i: Shapes.instance.circs) {
             if(i.name.equals(name + "-area") && i.objType.equals("electric-area")){
-                System.out.println("Sem tu <");
                 Double[] newCoords = {x,y-38.0,x+38.0,y,x,y+38.0};
                 i.setCenterX(x); i.setCenterY(y);
                 i.ordinates = newCoords;
                 i.updateCoords();
                 i.applyChanges();
-                i.applyUpdate();
-                i.ordinatesHistory.clear();
             }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
-                System.out.println("Sem tu <>");
                 Double[] newCoords = {x,y-57,x+57,y,x,y+57};
                 i.setCenterX(x); i.setCenterY(y);
                 i.ordinates = newCoords;
                 i.updateCoords();
                 i.applyChanges();
-                i.applyUpdate();
-                i.ordinatesHistory.clear();
             }
         }
     }
+
+
 
     public void insert(String sql){
         Statement stmt = null;
