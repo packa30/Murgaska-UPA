@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 
 import java.util.ArrayList;
 
@@ -32,11 +33,14 @@ public class ElemSelect {
         Shapes shapes = new Shapes(arrayList, group);
         Scale scale =new Scale();
         scale.setX(1);
-        scale.setY(-1);
+        scale.setY(-1);/*
         scale.pivotYProperty().bind(Bindings.createDoubleBinding(() ->
                         group.getBoundsInLocal().getMinY() + group.getBoundsInLocal().getHeight() /2,
                 group.boundsInLocalProperty()));
-        group.getTransforms().add(scale);
+        group.getTransforms().add(scale);*/
+        Translate translate = new Translate();
+        translate.setY(-760);
+        group.getTransforms().addAll(scale, translate);
         MainMenu.drawGroup = group;
     }
 }
