@@ -80,14 +80,16 @@ public class CreateMenu {
     }
 
     private void insertPoints(double x, double y){
-        if (!listOfPoints.contains((int)(x/3.8)) || !listOfPoints.contains((int)(y/3.8))){
+        double yy = 745-y;
+        if (!listOfPoints.contains((int)(x/3.8)) || !listOfPoints.contains((int)(yy/3.8))){
             listOfPoints.add((int)(x/3.8));
-            listOfPoints.add((int)(y/3.8));
+            listOfPoints.add((int)(yy/3.8));
         }
     }
 
     private void createPoint(int x, int y){
-        Circle circle = new Circle(x,y,10.f);
+        int yy = 745 - y;
+        Circle circle = new Circle(x,yy,10.f);
         circle.setFill(javafx.scene.paint.Color.TOMATO.deriveColor(1,1,1,0.5));
         circle.setStroke(Color.TOMATO);
         listOfCircles.add(circle);
