@@ -23,7 +23,7 @@ INSERT INTO USER_SDO_GEOM_METADATA VALUES (
 
 INSERT INTO map VALUES(
   'electric-area',
-  'e1',
+  'em1-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
@@ -46,7 +46,7 @@ INSERT INTO map VALUES(
 
 INSERT INTO map VALUES(
   'electric-area',
-  'e2',
+  'em2-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
@@ -83,7 +83,7 @@ INSERT INTO map VALUES(
 
 INSERT INTO map VALUES(
   'electric-area',
-  'e3',
+  'em3-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
@@ -120,7 +120,7 @@ INSERT INTO map VALUES(
 
 INSERT INTO map VALUES(	
   'electric-area',
-  'e4',
+  'em4-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
@@ -156,7 +156,7 @@ INSERT INTO map VALUES(
 
 INSERT INTO map VALUES(
   'electric-area',
-  'e5',
+  'em5-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
@@ -193,7 +193,7 @@ INSERT INTO map VALUES(
 
 INSERT INTO map VALUES(	
   'gas-area',
-  'g1',
+  'gm1-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
@@ -216,7 +216,7 @@ INSERT INTO map VALUES(
 
 INSERT INTO map VALUES(
   'gas-area',
-  'g2',
+  'gm2-area',
   SDO_GEOMETRY(
     2003,  -- 2-dimensional polygon
     NULL,
