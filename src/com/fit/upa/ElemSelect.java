@@ -1,9 +1,11 @@
 package com.fit.upa;
 
 import com.fit.upa.shapes.Shapes;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.transform.Scale;
 
 import java.util.ArrayList;
 
@@ -28,7 +30,13 @@ public class ElemSelect {
 
         ArrayList<ObjectsInDB> arrayList = dbConn.query("SELECT m.name, m.type, m.geometry FROM map m");
         Shapes shapes = new Shapes(arrayList, group);
-
+        Scale scale =new Scale();
+        scale.setX(1);
+        scale.setY(-1);
+        scale.pivotYProperty().bind(Bindings.createDoubleBinding(() ->
+                        group.getBoundsInLocal().getMinY() + group.getBoundsInLocal().getHeight() /2,
+                group.boundsInLocalProperty()));
+        group.getTransforms().add(scale);
         MainMenu.drawGroup = group;
     }
 }
