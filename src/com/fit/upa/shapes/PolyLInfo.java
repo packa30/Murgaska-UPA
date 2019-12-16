@@ -146,8 +146,9 @@ public class PolyLInfo {
 
             String result1 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_AREA(b.geometry, 1)) val FROM map a, map b where( a.name = \'" + owner.name + "\')  and (b.type = 'build') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
             if(result1 != null){
-                Integer val = Integer.parseInt(result0) - Integer.parseInt(result1) ;
-                free_val.setText(val.toString() + " m2");
+                double val = Float.parseFloat(result0) - Float.parseFloat(result1) ;
+                val = (Math.round(val * 100)/100.0);
+                free_val.setText(val + " m2");
             }else{
                 free_val.setText( result0 + " m2");
             }
