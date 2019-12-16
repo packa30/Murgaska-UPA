@@ -150,6 +150,7 @@ public class Shapes{
             for(Poly p: polys){
                 if(p.objType.equals(obType)){
                     p.root.toFront();
+                    System.out.println(p.name);
                 }
             }
             for(Rec r: recs){

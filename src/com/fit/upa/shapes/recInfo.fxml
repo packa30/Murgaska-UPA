@@ -10,7 +10,7 @@
 <AnchorPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.fit.upa.shapes.RecInfo">
 
     <children>
-        <Button layoutX="71.0" layoutY="486.0" mnemonicParsing="false" onAction="#onClick" text="back" />
+        <Button layoutX="92.0" layoutY="485.0" mnemonicParsing="false" onAction="#onClick" text="back" />
         <Text fx:id="name" layoutX="79.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
             <font>
                 <Font size="18.0" />
@@ -36,21 +36,21 @@
             </content>
         </ScrollPane>
 
-        <Text fx:id="velkost"       layoutX="30.0" layoutY="600" text="Velkost pozemku:"/>
-        <Text fx:id="obvod"         layoutX="30.0" layoutY="630" text="Obvod pozemku:"/>
-        <Text fx:id="plocha"        layoutX="30.0" layoutY="660" text="Volna plocha:"/>
-        <Text fx:id="budovy"        layoutX="30.0" layoutY="690" text="Pocet budov:"/>
-        <Text fx:id="plynovod"      layoutX="30.0" layoutY="720" text="Plynovod:"/>
+        <Text fx:id="velkost" layoutX="30.0" layoutY="600" text="Velkost pozemku:" />
+        <Text fx:id="obvod" layoutX="30.0" layoutY="630" text="Obvod pozemku:" />
+        <Text fx:id="plocha" layoutX="30.0" layoutY="660" text="Volna plocha:" />
+        <Text fx:id="budovy" layoutX="30.0" layoutY="690" text="Pocet budov:" />
+        <Text fx:id="plynovod" layoutX="30.0" layoutY="720" text="Plynovod:" />
 
-        <Text fx:id="velkost_val"   layoutX="140.0" layoutY="600" text="N/A"/>
-        <Text fx:id="obvod_val"     layoutX="140.0" layoutY="630" text="N/A"/>
-        <Text fx:id="plocha_val"    layoutX="140.0" layoutY="660" text="N/A"/>
-        <Text fx:id="budovy_val"    layoutX="140.0" layoutY="690" text="N/A"/>
-        <Text fx:id="plynovod_val"  layoutX="140.0" layoutY="720" text="N/A"/>
+        <Text fx:id="velkost_val" layoutX="140.0" layoutY="600" text="N/A" />
+        <Text fx:id="obvod_val" layoutX="140.0" layoutY="630" text="N/A" />
+        <Text fx:id="plocha_val" layoutX="140.0" layoutY="660" text="N/A" />
+        <Text fx:id="budovy_val" layoutX="140.0" layoutY="690" text="N/A" />
+        <Text fx:id="plynovod_val" layoutX="140.0" layoutY="720" text="N/A" />
 
         <CheckBox fx:id="ch1" contentDisplay="LEFT" layoutX="58.0" layoutY="102.0" mnemonicParsing="false" onAction="#check" text="Enable editing" />
         <Button layoutX="57.0" layoutY="362.0" mnemonicParsing="false" onAction="#onApply" text="Apply" />
-      <Button fx:id="imageButton" layoutX="80.0" layoutY="393.0" mnemonicParsing="false" onAction="#onBtn" text="Image" />
+      <Button fx:id="imageButton" layoutX="88.0" layoutY="406.0" mnemonicParsing="false" onAction="#onBtn" text="Image" />
       <Button fx:id="deleteButton" layoutX="121.0" layoutY="362.0" mnemonicParsing="false" onAction="#onDelete" text="Delete" />
     </children>
 
