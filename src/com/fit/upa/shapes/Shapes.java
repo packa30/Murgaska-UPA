@@ -197,7 +197,7 @@ public class Shapes{
     }
 
     public void orderObject(){
-        String[] order = {"land","road","build","electric-area","gas-area","electric-net","gas-pipeline","electric-mast","gas-mast"};
+        String[] order = {"land","road","build","electric-area","gas-area","electric-net","gas-pipeline","electric-mast","gas-mast","test42"};
         for(String obType: order){
             for(Poly p: polys){
                 if(p.objType.equals(obType)){
@@ -349,7 +349,9 @@ public class Shapes{
                             active = false;
                         }
                     }
-
+                    if(MainMenu.instance.isAction){
+                        active = false;
+                    }
                     if (active){
                         if(!shapeSelected){
                             try {
@@ -563,6 +565,10 @@ public class Shapes{
                         if (CreateMenu.instance.active){
                             active = false;
                         }
+                    }
+
+                    if(MainMenu.instance.isAction){
+                        active = false;
                     }
 
                     if (active){
@@ -792,6 +798,9 @@ public class Shapes{
                         }
                     }
 
+                    if(MainMenu.instance.isAction){
+                        active = false;
+                    }
                     if (active){
                         if(!shapeSelected){
                             try {
@@ -1093,7 +1102,9 @@ public class Shapes{
                             active = false;
                         }
                     }
-
+                    if(MainMenu.instance.isAction){
+                        active = false;
+                    }
                     if (active){
                         if(!shapeSelected){
                             try {
@@ -1306,6 +1317,10 @@ public class Shapes{
                         if (CreateMenu.instance.active){
                             active = false;
                         }
+                    }
+
+                    if(MainMenu.instance.isAction){
+                        active = false;
                     }
 
                     if (active){

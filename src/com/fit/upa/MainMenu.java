@@ -146,8 +146,12 @@ public class MainMenu {
             ArrayList<ObjectsInDB> in = DbConnection.getInstance().query(sql);
             if(in.size() > 0){
                 in.get(0).name = "test42";
-                new Shapes(in,MainMenu.drawGroup);
+                in.get(0).objType = "test42";
+
+                Shapes.instance.Shapes(in,MainMenu.drawGroup);
+                toBack(arrayList);
                 findTest();
+                Shapes.instance.orderObject();
             }
 
         }else if(arrayList.size() > 1 && isAction){
@@ -160,15 +164,32 @@ public class MainMenu {
     public void findTest(){
         for (Shapes.Poly i : Shapes.instance.polys) {
             if (i.name.equals("test42")) {
-                i.setFill(Color.BLACK.deriveColor(1,1,1,1));
-                i.setStroke(Color.BLACK);
+                i.setFill(Color.MAROON.deriveColor(1,1,1,1));
+                i.setStroke(Color.MAROON);
             }
         }
 
         for (Shapes.Rec i : Shapes.instance.recs){
             if(i.name.equals("test42")){
-                i.setFill(Color.BLACK.deriveColor(1,1,1,1));
-                i.setStroke(Color.BLACK);
+                i.setFill(Color.MAROON.deriveColor(1,1,1,1));
+                i.setStroke(Color.MAROON);
+            }
+        }
+    }
+
+    public void toBack(ArrayList<ObjectsInDB> arrayList){
+        for (ObjectsInDB obj : arrayList){
+            for (Shapes.Poly i : Shapes.instance.polys) {
+                if (i.name.equals(obj.name)) {
+                    i.toBack();
+                }
+            }
+
+            for (Shapes.Rec i : Shapes.instance.recs){
+                if(i.name.equals(obj.name)){
+                    System.out.println("Nasiel som");
+                    i.toBack();
+                }
             }
         }
     }
@@ -176,15 +197,15 @@ public class MainMenu {
     public void clearTest(){
         for (Shapes.Poly i : Shapes.instance.polys) {
             if (i.name.equals("test42")) {
-                i.setFill(Color.STEELBLUE.deriveColor(1,1,1,1));
-                i.setStroke(Color.BLUE);
+                i.delete();
+                break;
             }
         }
 
         for (Shapes.Rec i : Shapes.instance.recs){
             if(i.name.equals("test42")){
-                i.setFill(Color.STEELBLUE.deriveColor(1,1,1,1));
-                i.setStroke(Color.BLUE);
+                i.delete();
+                break;
             }
         }
     }
