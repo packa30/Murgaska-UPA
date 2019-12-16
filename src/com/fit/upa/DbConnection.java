@@ -253,15 +253,17 @@ public class DbConnection {
                 Double[] newCoords = {x,y-38,  x+38,y,  x,y+38};
                 i.setCenterX(x); i.setCenterY(y);
                 update(42,newCoords,i.name,i.elemInfo);
-//                i.ordinates = newCoords;
-//                i.ordinatesHistory.clear();
+                i.ordinates = newCoords;
+                i.updateCoords();
+                i.ordinatesHistory.clear();
                 break;
             }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
                 Double[] newCoords = {x,y-57,  x+57,y,  x,y+57};
                 i.setCenterX(x); i.setCenterY(y);
                 update(42,newCoords,i.name,i.elemInfo);
-//                i.ordinates = newCoords;
-//                i.ordinatesHistory.clear();
+                i.ordinates = newCoords;
+                i.updateCoords();
+                i.ordinatesHistory.clear();
                 break;
             }
         }
