@@ -25,7 +25,7 @@ public class Shapes{
     public ArrayList<Poly> polys = new ArrayList<Poly>(); //zoznam objektov typu polygono
     public ArrayList<Rec> recs = new ArrayList<Rec>(); //zoznam objektov typu obdlznik
     public ArrayList<Circ> circs = new ArrayList<Circ>();
-    ArrayList<Polyl> polyls = new ArrayList<Polyl>();
+    public ArrayList<Polyl> polyls = new ArrayList<Polyl>();
     public ArrayList<Point> points = new ArrayList<Point>();
 
     DbConnection dbConn = DbConnection.getInstance();
