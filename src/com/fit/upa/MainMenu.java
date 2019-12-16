@@ -140,6 +140,7 @@ public class MainMenu {
     public void onAction(ActionEvent actionEvent) {
         ArrayList<ObjectsInDB> arrayList = DbConnection.getInstance().query("SELECT  a.name, a.type, a.geometry from map a, map b where (a.name <> b.name) and b.type = 'build' and a.type ='build' and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
         if(arrayList.size() > 1 && !isAction){
+            select.setText("Disable");
             isAction = true;
             String sql = "SELECT a.name, a.type, SDO_GEOM.SDO_INTERSECTION(a.geometry, b.geometry, 0.005) geometry FROM map a, map b  WHERE a.name = '"+arrayList.get(1).name+"' AND b.name = '"+arrayList.get(0).name+"'";
             ArrayList<ObjectsInDB> in = DbConnection.getInstance().query(sql);
@@ -152,6 +153,7 @@ public class MainMenu {
         }else if(arrayList.size() > 1 && isAction){
             isAction = false;
             clearTest();
+            select.setText("Action");
         }
     }
 
