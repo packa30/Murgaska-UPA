@@ -128,6 +128,7 @@ public class DbConnection {
                 e.printStackTrace();
             }
         }
+
         return arrayList;
     }
 
@@ -146,6 +147,7 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Shapes.instance.orderObject();
     }
 
     public boolean checkCoverageElement(String type, String name, boolean isCreate ){
@@ -223,6 +225,7 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Shapes.instance.orderObject();
     }
 
     public String arrayToStringCirc(double[] ordinates){
@@ -239,6 +242,11 @@ public class DbConnection {
     public void updateArea(String name, Double[] ordinates){
         double x = ordinates[0];
         double y = ordinates[1];
+
+//        System.out.println(name);
+//        System.out.println(Shapes.instance.circs);
+//
+
         for (Shapes.Circ i: Shapes.instance.circs) {
             if(i.name.equals(name + "-area") && i.objType.equals("electric-area")){
                 //data = x + "," + (y-10) + "," + (x+10) + "," + y + "," + x + "," + (y+10);
@@ -246,16 +254,18 @@ public class DbConnection {
                 i.setCenterX(x); i.setCenterY(y);
                 update(42,newCoords,i.name,i.elemInfo);
 //                i.ordinates = newCoords;
-  //              i.applyChanges();
+//                i.ordinatesHistory.clear();
                 break;
             }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
-                Double[] newCoords = {x,y};
+                Double[] newCoords = {x,y-57,  x+57,y,  x,y+57};
                 i.setCenterX(x); i.setCenterY(y);
-                i.ordinates = newCoords;
-                i.applyChanges();
+                update(42,newCoords,i.name,i.elemInfo);
+//                i.ordinates = newCoords;
+//                i.ordinatesHistory.clear();
                 break;
             }
         }
+        Shapes.instance.orderObject();
     }
 
 
@@ -271,6 +281,7 @@ public class DbConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        Shapes.instance.orderObject();
     }
 
     public double[] changeToAppOrdinates(double[] ordinates){

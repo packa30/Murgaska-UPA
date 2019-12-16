@@ -81,6 +81,58 @@ public class Shapes{
         }
         orderObject();
     }
+
+    public void Shapes(ArrayList<ObjectsInDB> arrayList, Group g){
+        root = g;
+        for(ObjectsInDB elem : arrayList) {
+            //System.out.println(elem.eleminfo[2]+" , " +elem.type);
+            if(elem.type == 6){
+                Group plG = new Group();
+                g.getChildren().add(plG);
+                polyls.add(new Polyl(elem.type, elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
+                Polyl p = polyls.get(polyls.size()-1);
+                plG.getChildren().add(p);
+            }
+            else if(elem.eleminfo[2] == 3){
+                Group rG = new Group();
+                g.getChildren().add(rG);
+                recs.add(new Rec(elem.ordinates, elem.name, elem.objType,elem.eleminfo, rG));
+                Rec r = recs.get(recs.size() - 1);
+                rG.getChildren().add(r);
+            }
+            else if(elem.eleminfo[2] == 1 && elem.type == 3){
+                Group pG = new Group();
+                g.getChildren().add(pG);
+                polys.add(new Poly(elem.ordinates, elem.name, elem.objType,elem.eleminfo, pG));
+                Poly p = polys.get(polys.size() - 1);
+                pG.getChildren().add(p);
+            }
+            else if(elem.eleminfo[2] == 4){
+                Group cG = new Group();
+                g.getChildren().add(cG);
+                circs.add(new Circ(elem.ordinates, elem.name, elem.objType,elem.eleminfo, cG));
+                Circ c = circs.get(circs.size()-1);
+                cG.getChildren().add(c);
+            }
+            else if(elem.eleminfo[2] == 1 && elem.type == 2){
+                //System.out.println("mame zlozenu priamku");
+                Group plG = new Group();
+                g.getChildren().add(plG);
+                polyls.add(new Polyl(elem.type, elem.ordinates, elem.name, elem.objType,elem.eleminfo, plG));
+                Polyl p = polyls.get(polyls.size()-1);
+                plG.getChildren().add(p);
+            }
+            else if(elem.type == 1){
+                Group pG = new Group();
+                g.getChildren().add(pG);
+                points.add(new Point(elem.ordinates, elem.name, elem.objType, elem.eleminfo, pG));
+                Point po = points.get(points.size()-1);
+                pG.getChildren().add(po);
+            }
+        }
+        orderObject();
+    }
+
     public void deleteObj(String name){
         int i = 0;
         for(Rec rec: recs){
