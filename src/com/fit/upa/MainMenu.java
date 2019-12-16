@@ -1,6 +1,7 @@
 package com.fit.upa;
 
 import com.fit.upa.shapes.Shapes;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -39,12 +40,14 @@ public class MainMenu {
     @FXML
     private Button select;
 
+    public boolean isAction;
 
     public void initialize(){
         isPressed = false;
+        isAction = false;
         findAction = (Button) pane.lookup("#find");
         select = (Button) pane.lookup("#select");
-        select.setVisible(false);
+        select.setVisible(true);
     }
 
     public void onAddObj() throws IOException {
@@ -65,15 +68,17 @@ public class MainMenu {
         if(!isPressed){
             findAction.setText("Hide");
             isPressed = true;
-            select.setVisible(false);
+            select.setVisible(true);
+            // Objektz ktorsu v kolizii s gas area
             arrayList = DbConnection.getInstance().query("select a.name, a.type, a.geometry from map a, map b where (a.type = 'build') and (b.type = 'gas-area') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
-
+            String sql = "";
             for(ObjectsInDB elem : arrayList) {
                 System.out.println(elem.name);
+
                 if(elem.eleminfo[2] == 3){
                     //Rec
                     for (Shapes.Rec i : Shapes.instance.recs){
-                        if(i.name.equals(elem.name)){
+                        if(i.name.equals(elem.name)  && i.objType.equals("build")){
                             i.setStroke(Color.BLACK);
                             i.setFill(Color.BLACK);
                         }
@@ -82,15 +87,17 @@ public class MainMenu {
                 else if(elem.eleminfo[2] == 1 && elem.type == 3){
                     // Poly
                     for (Shapes.Poly i : Shapes.instance.polys){
-                        i.setStroke(Color.BLACK);
-                        i.setFill(Color.BLACK);
+                        if(i.name.equals(elem.name) && i.objType.equals("build")){
+                            i.setStroke(Color.BLACK);
+                            i.setFill(Color.BLACK);
+                        }
                     }
                 }
             }
         }else{
             findAction.setText("Find");
             isPressed = false;
-            select.setVisible(false);
+            select.setVisible(true);
 
             arrayList = DbConnection.getInstance().query("select a.name, a.type, a.geometry from map a, map b where (a.type = 'build') and (b.type = 'gas-area') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
 
@@ -130,4 +137,53 @@ public class MainMenu {
     }
 
 
+    public void onAction(ActionEvent actionEvent) {
+        ArrayList<ObjectsInDB> arrayList = DbConnection.getInstance().query("SELECT  a.name, a.type, a.geometry from map a, map b where (a.name <> b.name) and b.type = 'build' and a.type ='build' and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
+        if(arrayList.size() > 1 && !isAction){
+            isAction = true;
+            String sql = "SELECT a.name, a.type, SDO_GEOM.SDO_INTERSECTION(a.geometry, b.geometry, 0.005) geometry FROM map a, map b  WHERE a.name = '"+arrayList.get(1).name+"' AND b.name = '"+arrayList.get(0).name+"'";
+            ArrayList<ObjectsInDB> in = DbConnection.getInstance().query(sql);
+            if(in.size() > 0){
+                in.get(0).name = "test42";
+                new Shapes(in,MainMenu.drawGroup);
+                findTest();
+            }
+
+        }else if(arrayList.size() > 1 && isAction){
+            isAction = false;
+            clearTest();
+        }
+    }
+
+    public void findTest(){
+        for (Shapes.Poly i : Shapes.instance.polys) {
+            if (i.name.equals("test42")) {
+                i.setFill(Color.BLACK.deriveColor(1,1,1,1));
+                i.setStroke(Color.BLACK);
+            }
+        }
+
+        for (Shapes.Rec i : Shapes.instance.recs){
+            if(i.name.equals("test42")){
+                i.setFill(Color.BLACK.deriveColor(1,1,1,1));
+                i.setStroke(Color.BLACK);
+            }
+        }
+    }
+
+    public void clearTest(){
+        for (Shapes.Poly i : Shapes.instance.polys) {
+            if (i.name.equals("test42")) {
+                i.setFill(Color.STEELBLUE.deriveColor(1,1,1,1));
+                i.setStroke(Color.BLUE);
+            }
+        }
+
+        for (Shapes.Rec i : Shapes.instance.recs){
+            if(i.name.equals("test42")){
+                i.setFill(Color.STEELBLUE.deriveColor(1,1,1,1));
+                i.setStroke(Color.BLUE);
+            }
+        }
+    }
 }
