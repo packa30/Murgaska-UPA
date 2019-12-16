@@ -65,9 +65,7 @@ public class MainMenu {
         if(!isPressed){
             findAction.setText("Hide");
             isPressed = true;
-            select.setVisible(true);
-
-            // Vsetky budovy s gas areou
+            select.setVisible(false);
             arrayList = DbConnection.getInstance().query("select a.name, a.type, a.geometry from map a, map b where (a.type = 'build') and (b.type = 'gas-area') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
 
             for(ObjectsInDB elem : arrayList) {
@@ -76,19 +74,6 @@ public class MainMenu {
                     //Rec
                     for (Shapes.Rec i : Shapes.instance.recs){
                         if(i.name.equals(elem.name)){
-                            gasList = DbConnection.getInstance().query("select b.name, b.type, b.geometry from map a, map b where (a.name = '" + elem.name + "') and (b.type = 'gas-area') and (sdo_relate(a.geometry, b.geometry, 'mask=ANYINTERACT') = 'TRUE')");
-                            // Dostanem novu geometriu ich priesecnikov
-                            String sql = "SELECT c_a.type ,c_a.name, SDO_GEOM.SDO_INTERSECTION(c_a.geometry,c_c.geometry, 1) GEOMETRY FROM map c_a, map c_c where c_c.name = '"+ gasList.get(0).name +"' and c_a.name = '"+ elem.name +"'";
-                            System.out.println(sql);
-
-                            iList = DbConnection.getInstance().query(sql);
-
-                            System.out.println(iList.size());
-
-                            iList.get(0).name = "test";
-
-                            new Shapes(iList,MainMenu.drawGroup);
-
                             i.setStroke(Color.BLACK);
                             i.setFill(Color.BLACK);
                         }
@@ -102,11 +87,6 @@ public class MainMenu {
                     }
                 }
             }
-            iList = DbConnection.getInstance().query("SELECT c_a.name,c_a.type, SDO_GEOM.SDO_INTERSECTION(c_a.geometry,c_c.geometry, 0.005)\n" +
-                                                     "FROM map c_a, map c_c where c_c.name = 'gm1-area' and c_a.name = 'build4'");
-
-//            ObjectsInDB test = new ObjectsInDB();
-//            test.
         }else{
             findAction.setText("Find");
             isPressed = false;
