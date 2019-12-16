@@ -47,6 +47,10 @@ public class PolyInfo {
     public Text budovy;
     @FXML
     public Text budovy_val;
+    @FXML
+    public Text obvod;
+    @FXML
+    public Text obvod_val;
 
     public static PolyInfo instance;
     public PolyInfo(){
@@ -72,7 +76,8 @@ public class PolyInfo {
         gas_val     = (Text) pane.lookup("#plynovod_val");
         budovy      = (Text) pane.lookup("#budovy");
         budovy_val  = (Text) pane.lookup("#budovy_val");
-
+        obvod      = (Text) pane.lookup("#obvod");
+        obvod_val  = (Text) pane.lookup("#obvod_val");
         gas.setVisible(false);
         gas_val.setVisible(false);
     }
@@ -169,12 +174,19 @@ public class PolyInfo {
             if(result2 != null)
                 gas_val.setText(result2);
 
+            result1 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_LENGTH(b.geometry, 1)) val FROM map b where( b.name = \'" + owner.name + "\')");
+
+            obvod_val.setText(result1);
+
             gas.setVisible(true);
             gas_val.setVisible(true);
 
         }else if( owner.objType.equals("build")){
             size.setText("Obytna plocha");
             String result0 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_AREA(geometry, 1)) val FROM map where name = \'" + owner.name +"\'");
+            String result1 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_LENGTH(b.geometry, 1)) val FROM map b where( b.name = \'" + owner.name + "\')");
+            obvod_val.setText(result1);
+            obvod.setText("Obvod budovy:");
             size_val.setText( result0 + " m2");
             free_val.setVisible(false);
             free.setVisible(false);

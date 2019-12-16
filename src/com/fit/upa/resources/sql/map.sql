@@ -1,3 +1,6 @@
+DROP INDEX map_geometry_sidx;
+CREATE INDEX map_geometry_sidx ON map(geometry) INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+
 DROP TABLE multiobj;
 DROP TABLE map;
 
@@ -364,7 +367,4 @@ commit;
 
 SELECT m.name, m.type, m.geometry FROM map m;
 
-
-DROP INDEX map_geometry_sidx;
-CREATE INDEX map_geometry_sidx ON map(geometry) INDEXTYPE IS MDSYS.SPATIAL_INDEX;
 
