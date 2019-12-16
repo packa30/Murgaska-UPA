@@ -257,10 +257,11 @@ public class DbConnection {
 //                i.ordinatesHistory.clear();
                 break;
             }else if(i.name.equals(name + "-area") && i.objType.equals("gas-area")){
-                Double[] newCoords = {x,y};
+                Double[] newCoords = {x,y-57,  x+57,y,  x,y+57};
                 i.setCenterX(x); i.setCenterY(y);
-                i.ordinates = newCoords;
-                i.applyChanges();
+                update(42,newCoords,i.name,i.elemInfo);
+//                i.ordinates = newCoords;
+//                i.ordinatesHistory.clear();
                 break;
             }
         }
