@@ -190,7 +190,7 @@ public class CreateMenu {
         String name = elementName.getText().toLowerCase();
         String elemType = elementType.getValue().toString().toLowerCase();
 
-        if(listOfPoints.isEmpty()){
+        if(listOfPoints.isEmpty() || name.isEmpty()){
             return;
         }
 

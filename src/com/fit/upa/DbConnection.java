@@ -116,6 +116,9 @@ public class DbConnection {
                         } else if (eleminfo[2] == 1 && type == 2) {
                             double[] viewOrdinates = changeToAppOrdinates(ordinates);
                             arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
+                        }else{
+                            double[] viewOrdinates = changeToAppOrdinates(ordinates);
+                            arrayList.add(new ObjectsInDB(type, objType, name, viewOrdinates, eleminfo));
                         }
                     }
                 }

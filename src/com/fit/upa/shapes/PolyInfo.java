@@ -185,7 +185,7 @@ public class PolyInfo {
             size.setText("Obytna plocha");
             String result0 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_AREA(geometry, 1)) val FROM map where name = \'" + owner.name +"\'");
             String result1 = connection.selectVal("SELECT SUM(SDO_GEOM.SDO_LENGTH(b.geometry, 1)) val FROM map b where( b.name = \'" + owner.name + "\')");
-            obvod_val.setText(result1);
+            obvod_val.setText(result1 + " m");
             obvod.setText("Obvod budovy:");
             size_val.setText( result0 + " m2");
             free_val.setVisible(false);
