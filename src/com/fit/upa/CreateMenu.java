@@ -258,7 +258,8 @@ public class CreateMenu {
                 arrayList = connect.query("SELECT m.name, m.type, m.geometry FROM map m where (m.name =\'" + name + "\')");
             }
 
-            new Shapes(arrayList, group);
+            Shapes shape = Shapes.instance;
+            shape.Shapes(arrayList, group);
         }
 
         removeElems();
