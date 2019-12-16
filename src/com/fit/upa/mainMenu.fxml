@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:controller="com.fit.upa.MainMenu" fx:id="pane" minHeight="0.0" minWidth="0.0" prefHeight="160.0"
-            prefWidth="100.0" SplitPane.resizableWithParent="false" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="pane" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" SplitPane.resizableWithParent="false" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.fit.upa.MainMenu">
     <children>
         <Button layoutX="15.0" layoutY="120.0" mnemonicParsing="false" onAction="#findAction" text="Find" fx:id="find"/>
         <Button layoutX="64.0" layoutY="120.0" mnemonicParsing="false" onAction="#onAction" text="Action" fx:id="select"/>
